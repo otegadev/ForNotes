@@ -10,43 +10,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-enum class ForNotesLabels {
-    School,
-    Business,
-    Event,
-    Meeting,
-    Personal,
-    Work,
-    Ideas,
-    Goals,
-    Shopping,
-    Travel,
-    Reminder,
-    Gadgets,
-    Study,
-    Fitness,
-    Health,
-    Project
-}
 
-enum class TodoItemPriority {
-    Low,
-    Medium,
-    High
-}
-
-enum class JournalType {
-    Daily,
-    Weekly,
-    Monthly,
-}
-
-enum class TodoStatus (val status: String) {
-    Pending (status = "Pending"),
-    InProgress (status = "In Progress"),
-    Completed (status = "Completed"),
-    Cancelled (status = "Cancelled")
-}
 
 /**
  * Data class for notes
