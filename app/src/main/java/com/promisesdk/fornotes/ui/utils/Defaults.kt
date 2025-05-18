@@ -18,6 +18,7 @@ import androidx.compose.material.icons.rounded.Portrait
 import androidx.compose.material.icons.rounded.School
 import androidx.compose.material.icons.rounded.ShoppingBasket
 import androidx.compose.material.icons.rounded.SportsEsports
+import androidx.compose.material.icons.rounded.VideogameAsset
 import androidx.compose.material.icons.rounded.Work
 import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.Color
@@ -111,7 +112,7 @@ enum class ForNotesLabels (
     ),
     Hobby (
         color = customColor17,
-        icon = Icons.Rounded.SportsEsports
+        icon = Icons.Rounded.VideogameAsset
     )
 }
 

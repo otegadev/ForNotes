@@ -3,14 +3,13 @@ package com.promisesdk.fornotes.data
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import androidx.room.TypeConverter
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-
-
 
 /**
  * Data class for notes
@@ -49,9 +48,9 @@ data class TodosData (
         parentColumns = ["todoId"],
         childColumns = ["todosDataId"],
         onDelete = ForeignKey.CASCADE
-    )]
+    )],
+    indices = [Index(value = ["todosDataId"])]
 )
-
 data class TodoItem(
     @PrimaryKey (autoGenerate = true) val todoItemId: Int = 0,
     val todosDataId: Int,

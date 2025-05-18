@@ -16,7 +16,6 @@ import androidx.room.TypeConverters
 )
 abstract class ForNotesDatabase: RoomDatabase() {
     abstract val forNotesDao: ForNotesDao
-    abstract val stringListConverter: StringListConverter
 
     companion object {
         @Volatile

@@ -1,13 +1,16 @@
 package com.promisesdk.fornotes.data
 
+import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
 
+@Dao
 interface ForNotesDao {
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNote(note: NotesData)
@@ -44,21 +47,27 @@ interface ForNotesDao {
     @Delete
     suspend fun deleteTodo(todo: TodosData)
 
+    @Transaction
     @Query("SELECT * FROM todos ORDER BY todoId DESC")
     fun getAllTodos(): Flow<List<TodoDataWithItems>>
 
+    @Transaction
     @Query("SELECT * FROM todos WHERE todoTitle LIKE '%' || :queryString || '%' ORDER BY todoId DESC")
     fun getTodoByTodoTitle(queryString: String): Flow<List<TodoDataWithItems>>
 
+    @Transaction
     @Query("SELECT * FROM todos WHERE todoLabel = :queryString ORDER BY todoId DESC")
     fun getTodoByLabel(queryString: String): Flow<List<TodoDataWithItems>>
 
+    @Transaction
     @Query("SELECT * FROM todos WHERE todoStatus = :queryString ORDER BY todoId DESC")
     fun getTodoByStatus(queryString: String): Flow<List<TodoDataWithItems>>
 
+    @Transaction
     @Query("SELECT * FROM todos WHERE creationTimeInMillis = :queryString ORDER BY todoId DESC")
     fun getTodoByCreationTime(queryString: Long): Flow<List<TodoDataWithItems>>
 
+    @Transaction
     @Query("SELECT * FROM todos WHERE todoId = :queryString")
     fun getTodoById(queryString: String): Flow<TodoDataWithItems>
 

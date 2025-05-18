@@ -3,4 +3,7 @@
     <string name="notes">Notes</string>
     <string name="todos">To-Dos</string>
     <string name="journals">Journals</string>
+    <string name="archive">Archive</string>
+    <string name="trash">Trash</string>
+    <string name="settings">Settings</string>
 </resources>
