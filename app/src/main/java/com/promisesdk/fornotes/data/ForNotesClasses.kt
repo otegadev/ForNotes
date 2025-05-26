@@ -20,7 +20,7 @@ data class NotesData (
     val noteId: Int = 0,
     val noteTitle: String,
     val noteContent: String,
-    val noteLabel: String,
+    val noteLabel: String? = null,
     val creationTimeInMillis: Long,
 )
 
@@ -56,7 +56,7 @@ data class TodoItem(
     val todosDataId: Int,
     val primaryText: String,
     @Serializable val secondaryTexts: List<String> = emptyList(),
-    val isChecked: Boolean = false,
+    var isChecked: Boolean = false,
     val priority: String = "",
 )
 
@@ -96,6 +96,7 @@ data class JournalsData (
     @PrimaryKey(autoGenerate = true)
     val journalId: Int = 0,
     val journalName: String,
+    val journalDescription: String,
     val journalContent: String,
     val journalType: String,
     val creationTimeInMillis: Long,

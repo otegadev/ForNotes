@@ -2,7 +2,6 @@ package com.promisesdk.fornotes.ui.utils
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Assignment
-import androidx.compose.material.icons.rounded.Assignment
 import androidx.compose.material.icons.rounded.Business
 import androidx.compose.material.icons.rounded.DevicesOther
 import androidx.compose.material.icons.rounded.EmojiEvents
@@ -17,12 +16,13 @@ import androidx.compose.material.icons.rounded.PendingActions
 import androidx.compose.material.icons.rounded.Portrait
 import androidx.compose.material.icons.rounded.School
 import androidx.compose.material.icons.rounded.ShoppingBasket
-import androidx.compose.material.icons.rounded.SportsEsports
 import androidx.compose.material.icons.rounded.VideogameAsset
 import androidx.compose.material.icons.rounded.Work
-import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.promisesdk.fornotes.data.JournalsData
+import com.promisesdk.fornotes.data.NotesData
+import com.promisesdk.fornotes.data.TodoDataWithItems
 import com.promisesdk.fornotes.ui.theme.customColor1
 import com.promisesdk.fornotes.ui.theme.customColor10
 import com.promisesdk.fornotes.ui.theme.customColor11
@@ -32,7 +32,12 @@ import com.promisesdk.fornotes.ui.theme.customColor14
 import com.promisesdk.fornotes.ui.theme.customColor15
 import com.promisesdk.fornotes.ui.theme.customColor16
 import com.promisesdk.fornotes.ui.theme.customColor17
+import com.promisesdk.fornotes.ui.theme.customColor18
+import com.promisesdk.fornotes.ui.theme.customColor19
 import com.promisesdk.fornotes.ui.theme.customColor2
+import com.promisesdk.fornotes.ui.theme.customColor20
+import com.promisesdk.fornotes.ui.theme.customColor21
+import com.promisesdk.fornotes.ui.theme.customColor22
 import com.promisesdk.fornotes.ui.theme.customColor3
 import com.promisesdk.fornotes.ui.theme.customColor4
 import com.promisesdk.fornotes.ui.theme.customColor5
@@ -40,7 +45,6 @@ import com.promisesdk.fornotes.ui.theme.customColor6
 import com.promisesdk.fornotes.ui.theme.customColor7
 import com.promisesdk.fornotes.ui.theme.customColor8
 import com.promisesdk.fornotes.ui.theme.customColor9
-import com.promisesdk.fornotes.ui.theme.primaryLight
 
 enum class ForNotesLabels (
     val color: Color,
@@ -122,10 +126,30 @@ enum class TodoItemPriority {
     High
 }
 
-enum class JournalType {
-    Daily,
-    Weekly,
-    Monthly,
+enum class JournalType (
+    val journalTypeName: String,
+    val color: Color,
+) {
+    Diary (
+        journalTypeName = "Diary",
+        color = customColor18
+    ),
+    Gratitude (
+        journalTypeName = "Gratitude",
+        color = customColor19
+    ),
+    Dream (
+        journalTypeName = "Dream",
+        color = customColor20
+    ),
+    HabitTracker (
+        journalTypeName = "Habit Tracker",
+        color = customColor21
+    ),
+    Custom (
+        journalTypeName = "Custom",
+        color = customColor22
+    )
 }
 
 enum class TodoStatus (val status: String) {
@@ -133,4 +157,10 @@ enum class TodoStatus (val status: String) {
     InProgress (status = "In Progress"),
     Completed (status = "Completed"),
     Cancelled (status = "Cancelled")
+}
+
+sealed interface SearchResults {
+    data class NotesSearchResults(val notes: List<NotesData>) : SearchResults
+    data class TodosSearchResults(val todos: List<TodoDataWithItems>) : SearchResults
+    data class JournalsSearchResults(val journals: List<JournalsData>) : SearchResults
 }

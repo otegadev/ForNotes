@@ -272,6 +272,7 @@ fun ForNotesTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = AppTypography,
+        shapes = shapes,
         content = content
     )
 }
