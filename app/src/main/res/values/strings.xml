@@ -12,4 +12,7 @@
     <string name="navigate_to_this_todo">Navigate to %1$s todo list</string>
     <string name="search_placeholder">Search your %1$s</string>
     <string name="search_icon">Search</string>
+    <string name="create_note">Create a note</string>
+    <string name="create_todo">Create a list</string>
+    <string name="create_journal">Create a journal</string>
 </resources>

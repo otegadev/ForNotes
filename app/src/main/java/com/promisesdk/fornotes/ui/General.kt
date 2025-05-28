@@ -1,9 +1,7 @@
 package com.promisesdk.fornotes.ui
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
@@ -14,22 +12,17 @@ import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
 import com.promisesdk.fornotes.R
-import com.promisesdk.fornotes.data.NotesData
-import com.promisesdk.fornotes.data.TodosData
 import com.promisesdk.fornotes.ui.screens.jounals.JournalsList
 import com.promisesdk.fornotes.ui.screens.notes.NotesList
 import com.promisesdk.fornotes.ui.screens.todos.TodosList
@@ -62,11 +55,18 @@ fun ForNotesTopAppBar(
        } else {
            null
        }
-   Row (modifier = modifier) {
+   Row (
+       modifier = modifier,
+   ) {
        IconButton(
            onClick = onNavigationClick,
            modifier = Modifier
-               .padding(dimensionResource(R.dimen.padding_small))
+               .padding(
+                   top = dimensionResource(R.dimen.padding_small),
+                   bottom = dimensionResource(R.dimen.padding_small),
+                   start = dimensionResource(R.dimen.padding_very_small),
+                   end = dimensionResource(R.dimen.padding_very_small),
+               )
                .windowInsetsPadding(WindowInsets.statusBars),
            enabled = true,
        ) {
@@ -74,7 +74,7 @@ fun ForNotesTopAppBar(
                imageVector = Icons.Rounded.Menu,
                contentDescription = stringResource(R.string.nav_drawer_description),
                modifier = Modifier
-                   .size(48.dp),
+                   .size(40.dp),
                tint = MaterialTheme.colorScheme.onSurface
            )
        }
@@ -104,7 +104,12 @@ fun ForNotesTopAppBar(
            },
            expanded = expanded,
            onExpandedChange = onExpandedChange,
-           modifier = Modifier.weight(1f),
+           modifier = Modifier
+               .weight(1f)
+               .padding(
+                   end = dimensionResource(R.dimen.padding_small)
+               )
+           ,
            shape = SearchBarDefaults.inputFieldShape,
            windowInsets = SearchBarDefaults.windowInsets
        ) {
@@ -113,20 +118,19 @@ fun ForNotesTopAppBar(
                    JournalsList(
                        journalList = searchResults.journals,
                        onJournalClick = { onResultClick() },
-                       modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
+                       modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
                    )
                is SearchResults.NotesSearchResults ->
                    NotesList(
                        notesList = searchResults.notes,
                        onNoteClick = onResultClick,
-                       contentPadding = PaddingValues(0.dp),
                        modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
                    )
                is SearchResults.TodosSearchResults ->
                    TodosList(
                        todosList = searchResults.todos,
                        onTodoClick = onResultClick,
-                       modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
+                       modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
                    )
            }
        }
