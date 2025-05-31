@@ -1,5 +1,7 @@
 package com.promisesdk.fornotes.ui
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
@@ -7,30 +9,52 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.FloatingActionButtonDefaults.containerColor
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.promisesdk.fornotes.R
+import com.promisesdk.fornotes.ui.navigation.ForNotesBottomNavBar
+import com.promisesdk.fornotes.ui.navigation.ForNotesNavDrawerContent
+import com.promisesdk.fornotes.ui.navigation.navItemList
+import com.promisesdk.fornotes.ui.navigation.navRailItemExtras
 import com.promisesdk.fornotes.ui.screens.jounals.JournalsList
 import com.promisesdk.fornotes.ui.screens.notes.NotesList
 import com.promisesdk.fornotes.ui.screens.todos.TodosList
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
 import com.promisesdk.fornotes.ui.utils.Screen
 import com.promisesdk.fornotes.ui.utils.SearchResults
+import kotlinx.coroutines.launch
 
-
+/**
+ * Top app bar containing menu and search bar
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ForNotesTopAppBar(
@@ -135,6 +159,132 @@ fun ForNotesTopAppBar(
            }
        }
    }
+}
+
+/**
+ * General composable for notes, todos and journal screens
+ */
+@Composable
+fun HomeScreen(
+    screen: Screen,
+    itemList: @Composable () -> Unit,
+    onNavItemClick: (Screen) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val scope = rememberCoroutineScope()
+    var drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val screenName = if (screen == Screen.NotesScreen)
+        stringResource(R.string.notes)
+        else if (screen == Screen.TodoScreen)
+            stringResource(R.string.todos)
+        else if (screen == Screen.JournalScreen)
+            stringResource(R.string.journals)
+        else
+            null
+    val fabText = if (screen == Screen.NotesScreen)
+        stringResource(R.string.create_note)
+        else if (screen == Screen.TodoScreen)
+            stringResource(R.string.create_todo)
+        else if (screen == Screen.JournalScreen)
+            stringResource(R.string.create_journal)
+        else
+            null
+    ModalNavigationDrawer(
+        drawerContent = {
+            ModalDrawerSheet {
+                Text(
+                    text = stringResource(R.string.app_name),
+                    style = MaterialTheme.typography.displayMedium,
+                    modifier = Modifier.padding(dimensionResource(R.dimen.padding_large)),
+                    fontWeight = FontWeight.Bold
+                )
+                HorizontalDivider(thickness = 4.dp)
+                ForNotesNavDrawerContent(
+                    navDrawerItemList = navRailItemExtras,
+                    onClick = onNavItemClick
+                )
+            }
+        },
+        drawerState = drawerState,
+        gesturesEnabled = true,
+    ) {
+        Scaffold (
+            modifier = modifier,
+            topBar = {
+                ForNotesTopAppBar(
+                    onNavigationClick = { scope.launch {
+                        drawerState.apply {
+                            if (isClosed) open() else close()
+                        }
+                    }
+                    },
+                    searchBarQuery = "",
+                    onQueryChange = {},
+                    onSearch = {},
+                    expanded = false,
+                    onExpandedChange = {},
+                    screen = screen,
+                    searchResults = SearchResults.NotesSearchResults(emptyList()),
+                    onResultClick = {},
+                    modifier = modifier
+                )
+            },
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = {},
+                    modifier = modifier,
+                    shape = FloatingActionButtonDefaults.extendedFabShape,
+                    containerColor = containerColor,
+                    contentColor = contentColorFor(containerColor),
+                    elevation = FloatingActionButtonDefaults.elevation(
+                        defaultElevation = 8.dp,
+                        pressedElevation = 4.dp
+                    ),
+                ) {
+                    Row (
+                        modifier = Modifier.padding(8.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Add,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(36.dp)
+                        )
+                        Text(
+                            text = fabText.toString(),
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
+                }
+            },
+            bottomBar = {
+                ForNotesBottomNavBar(
+                    navItemList = navItemList,
+                    onClick = onNavItemClick,
+                    modifier = Modifier,
+                    currentScreen = screen
+                )
+            }
+        ) { contentPadding ->
+            Column (
+                modifier = Modifier.padding(contentPadding)
+            ) {
+                Text(
+                    text = screenName.toString(),
+                    style = MaterialTheme.typography.displayMedium,
+                    modifier = Modifier.padding(dimensionResource(R.dimen.padding_large)),
+                    fontWeight = FontWeight.Bold
+                )
+                itemList
+            }
+
+        }
+    }
 }
 
 @Preview (

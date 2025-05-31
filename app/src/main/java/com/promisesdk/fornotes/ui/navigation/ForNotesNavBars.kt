@@ -33,18 +33,18 @@ import com.promisesdk.fornotes.ui.utils.Screen
 @Composable
 fun ForNotesNavDrawerContent(
     navDrawerItemList: List<NavItem>,
-    currentScreen: Screen,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onClick: (Screen) -> Unit,
+    modifier: Modifier = Modifier,
+    currentScreen: Screen? = null,
 ) {
     Column (modifier = modifier) {
-        for (navItem in navItemList) {
+        for (navItem in navDrawerItemList) {
             NavigationDrawerItem(
                 label = {Text(
                     text = stringResource(navItem.text)
                 )},
                 selected = currentScreen == navItem.screen,
-                onClick = onClick,
+                onClick = { onClick(navItem.screen) },
                 modifier = modifier.padding(dimensionResource(R.dimen.padding_small)),
                 icon = {
                     Icon(
@@ -52,10 +52,6 @@ fun ForNotesNavDrawerContent(
                         contentDescription = stringResource(navItem.text)
                     )
                 },
-                //badge = TODO()
-                //shape = TODO(),
-                //colors = TODO(),
-                //interactionSource = TODO()
             )
         }
     }
