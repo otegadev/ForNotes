@@ -162,10 +162,10 @@ fun ForNotesTopAppBar(
 }
 
 /**
- * General composable for notes, todos and journal screens
+ * General composable for notes, todos and journal screens on compact devices
  */
 @Composable
-fun HomeScreen(
+fun CompactHomeScreenLayout(
     screen: Screen,
     itemList: @Composable () -> Unit,
     onNavItemClick: (Screen) -> Unit,
@@ -285,6 +285,14 @@ fun HomeScreen(
 
         }
     }
+}
+
+/**
+ * Composable for notes, todos and journals screens on medium devices
+ */
+@Composable
+fun MediumHomeScreenLayout() {
+
 }
 
 @Preview (

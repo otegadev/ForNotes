@@ -3,11 +3,15 @@ package com.promisesdk.fornotes.ui.screens.jounals
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,8 +27,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.promisesdk.fornotes.R
 import com.promisesdk.fornotes.data.JournalsData
-import com.promisesdk.fornotes.ui.HomeScreen
+import com.promisesdk.fornotes.ui.CompactHomeScreenLayout
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
+import com.promisesdk.fornotes.ui.utils.ForNotesWindowSize
 import com.promisesdk.fornotes.ui.utils.JournalType
 import com.promisesdk.fornotes.ui.utils.Screen
 
@@ -35,7 +40,7 @@ fun JournalsHome(
     onNavItemClick: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    HomeScreen(
+    CompactHomeScreenLayout(
         screen = Screen.JournalScreen,
         itemList = {
             JournalsList(
@@ -49,6 +54,52 @@ fun JournalsHome(
     )
 }
 
+/**
+ * Lazy Staggered Grid for journals
+ */
+@Composable
+fun JournalsGrid(
+    journalList: List<JournalsData>,
+    onJournalClick: () -> Unit,
+    windowSize: ForNotesWindowSize,
+    modifier: Modifier = Modifier
+) {
+    val columnCount: StaggeredGridCells = when (windowSize) {
+        ForNotesWindowSize.Compact -> StaggeredGridCells.Fixed(2)
+        ForNotesWindowSize.Medium -> StaggeredGridCells.Fixed(2)
+        ForNotesWindowSize.Expanded -> StaggeredGridCells.Fixed(3)
+    }
+    LazyVerticalStaggeredGrid(
+        columns = columnCount,
+        verticalItemSpacing = dimensionResource(R.dimen.padding_small),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small)),
+        modifier = modifier
+    ) {
+        items (
+            items = journalList,
+            key = {journal -> journal.journalId}
+        ) { journal ->
+            JournalCard(
+                journal = journal,
+                journalType = JournalType.Diary,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .clickable(
+                        onClick = onJournalClick,
+                        onClickLabel = stringResource(
+                            R.string.navigate_to_this_journal,
+                            journal.journalName
+                        )
+                    )
+            )
+        }
+    }
+}
+
+
+/**
+ * Lazy list for journals
+ */
 @Composable
 fun JournalsList(
     journalList: List<JournalsData>,

@@ -3,11 +3,15 @@ package com.promisesdk.fornotes.ui.screens.todos
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
@@ -27,9 +31,10 @@ import com.promisesdk.fornotes.R
 import com.promisesdk.fornotes.data.TodoDataWithItems
 import com.promisesdk.fornotes.data.TodoItem
 import com.promisesdk.fornotes.data.TodosData
-import com.promisesdk.fornotes.ui.HomeScreen
+import com.promisesdk.fornotes.ui.CompactHomeScreenLayout
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
 import com.promisesdk.fornotes.ui.utils.ForNotesLabels
+import com.promisesdk.fornotes.ui.utils.ForNotesWindowSize
 import com.promisesdk.fornotes.ui.utils.Screen
 
 @Composable
@@ -38,7 +43,7 @@ fun TodosHome(
     onNavItemClick: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    HomeScreen(
+    CompactHomeScreenLayout(
         screen = Screen.TodoScreen,
         itemList = {
             TodosList(
@@ -50,6 +55,49 @@ fun TodosHome(
         onNavItemClick = onNavItemClick,
         modifier = modifier
     )
+}
+
+/**
+ * Lazy Staggered Grid for todos
+ */
+@Composable
+fun TodosGrid(
+    todosList: List<TodoDataWithItems>,
+    onTodoClick: () -> Unit,
+    windowSize: ForNotesWindowSize,
+    modifier: Modifier = Modifier
+) {
+    val columnCount: StaggeredGridCells = when (windowSize) {
+        ForNotesWindowSize.Compact -> StaggeredGridCells.Fixed(2)
+        ForNotesWindowSize.Medium -> StaggeredGridCells.Fixed(2)
+        ForNotesWindowSize.Expanded -> StaggeredGridCells.Fixed(3)
+    }
+    LazyVerticalStaggeredGrid(
+        columns = columnCount,
+        verticalItemSpacing = dimensionResource(R.dimen.padding_small),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small)),
+        modifier = modifier
+    ) {
+        items (
+            items = todosList,
+            key = {todo -> todo.todosData.todoId}
+        ) { todo ->
+            TodoCard(
+                todoData = todo,
+                hasLabel = true,
+                label = ForNotesLabels.Work,
+                modifier = Modifier
+                    .padding(dimensionResource(R.dimen.padding_small))
+                    .clickable(
+                        onClick = onTodoClick,
+                        onClickLabel = stringResource(
+                            R.string.navigate_to_this_todo,
+                            todo.todosData.todoTitle
+                        )
+                    )
+            )
+        }
+    }
 }
 
 /**

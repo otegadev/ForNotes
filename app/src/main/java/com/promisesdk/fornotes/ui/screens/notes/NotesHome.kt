@@ -3,11 +3,16 @@ package com.promisesdk.fornotes.ui.screens.notes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -24,9 +29,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.promisesdk.fornotes.R
 import com.promisesdk.fornotes.data.NotesData
-import com.promisesdk.fornotes.ui.HomeScreen
+import com.promisesdk.fornotes.ui.CompactHomeScreenLayout
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
 import com.promisesdk.fornotes.ui.utils.ForNotesLabels
+import com.promisesdk.fornotes.ui.utils.ForNotesWindowSize
 import com.promisesdk.fornotes.ui.utils.Screen
 
 @Composable
@@ -35,7 +41,7 @@ fun NotesHome(
     onNavItemClick: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    HomeScreen(
+    CompactHomeScreenLayout(
         screen = Screen.NotesScreen,
         itemList = {
             NotesList(
@@ -47,6 +53,49 @@ fun NotesHome(
         onNavItemClick = onNavItemClick,
         modifier = modifier,
     )
+}
+
+/**
+ * Lazy Staggered Grid for notes
+ */
+@Composable
+fun NotesGrid(
+    notesList: List<NotesData>,
+    onNoteClick: () -> Unit,
+    windowSize: ForNotesWindowSize,
+    modifier: Modifier = Modifier
+) {
+    val columnCount: StaggeredGridCells = when (windowSize) {
+        ForNotesWindowSize.Compact -> StaggeredGridCells.Fixed(2)
+        ForNotesWindowSize.Medium -> StaggeredGridCells.Fixed(2)
+        ForNotesWindowSize.Expanded -> StaggeredGridCells.Fixed(3)
+    }
+    LazyVerticalStaggeredGrid(
+        columns = columnCount,
+        verticalItemSpacing = dimensionResource(R.dimen.padding_very_small),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_very_small)),
+        modifier = modifier
+    ) {
+        items (
+            items = notesList,
+            key = {note -> note.noteId}
+        ) { note ->
+            NotesCard(
+                notesData = note,
+                hasLabel = true,
+                label = ForNotesLabels.Personal,
+                modifier = Modifier
+                    .padding(dimensionResource(R.dimen.padding_very_small))
+                    .clickable(
+                        onClick = onNoteClick,
+                        onClickLabel = stringResource(
+                            R.string.navigate_to_this_note,
+                            note.noteTitle
+                        )
+                    )
+            )
+        }
+    }
 }
 
 /**
@@ -154,6 +203,46 @@ val sampleNote = NotesData(
     noteLabel = "School",
     creationTimeInMillis = 122
 )
+
+// Let's create a list of sample NotesData instances
+val sampleNotes = List(10) { index ->
+    NotesData(
+        noteId = index,
+        noteTitle = "Note ${index + 1}: Lorem ipsum dolor smit",
+        noteContent = if (index % 2 == 0)
+            "Lorem ipsum dolor smit, Lorem ipsum dolor smit," +
+                "Lorem ipsum dolor smit,Lorem ipsum dolor smit," +
+                "Lorem ipsum dolor smit,Lorem ipsum dolor smit," +
+                "Lorem ipsum dolor smit,Lorem ipsum dolor smit," +
+                "Lorem ipsum dolor smit,Lorem ipsum dolor smit," +
+                "Lorem ipsum dolor smit,Lorem ipsum dolor smit,"
+                    else "Lorem ipsum dolor smit, Lorem ipsum dolor smit," +
+                "Lorem ipsum dolor smit,Lorem ipsum dolor smit,",
+        noteLabel = if (index % 2 == 0) "School" else "Personal", // Alternating labels for variety
+        creationTimeInMillis = (122 + index * 10).toLong() // Varying creation times
+    )
+}
+
+
+
+@Preview (
+    showSystemUi = true, device = "spec:width=1280dp,height=800dp,dpi=240"
+)
+@Composable
+private fun NotesGridPreview() {
+    ForNotesTheme {
+        NotesGrid(
+            notesList = sampleNotes,
+            onNoteClick = {},
+            windowSize = ForNotesWindowSize.Expanded, // You can change this to test different sizes
+            modifier = Modifier
+                .padding(dimensionResource(R.dimen.padding_medium))
+                .fillMaxSize()
+        )
+    }
+}
+
+
 
 @Preview
 @Composable
