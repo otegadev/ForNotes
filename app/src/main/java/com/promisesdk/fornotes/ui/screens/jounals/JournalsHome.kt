@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.promisesdk.fornotes.R
 import com.promisesdk.fornotes.data.JournalsData
+import com.promisesdk.fornotes.data.sampleJournalEntry
 import com.promisesdk.fornotes.ui.CompactHomeScreenLayout
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
 import com.promisesdk.fornotes.ui.utils.ForNotesWindowSize
@@ -178,15 +179,6 @@ fun JournalCard(
 
 }
 
-// --- Sample JournalsData Instance Creation ---
-val sampleJournalEntry = JournalsData(
-    journalId = 1, // If you have an ID field
-    journalName = "My Daily Reflections",
-    journalDescription = "A collection of thoughts, events, and feelings from each day. This space is for personal growth and understanding patterns in my life. I plan to write here every evening before bed.",
-    journalType = JournalType.Diary.journalTypeName,
-    journalContent = "This is a sample journal entry.",
-    creationTimeInMillis = System.currentTimeMillis() // If you have a date field
-)
 
 @Preview(device = "id:pixel_9_pro")
 @Composable

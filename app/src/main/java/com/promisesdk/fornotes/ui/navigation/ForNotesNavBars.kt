@@ -32,9 +32,9 @@ import com.promisesdk.fornotes.ui.utils.Screen
 
 @Composable
 fun ForNotesNavDrawerContent(
-    navDrawerItemList: List<NavItem>,
     onClick: (Screen) -> Unit,
     modifier: Modifier = Modifier,
+    navDrawerItemList: List<NavItem> = navRailItemExtras,
     currentScreen: Screen? = null,
 ) {
     Column (modifier = modifier) {
@@ -59,18 +59,18 @@ fun ForNotesNavDrawerContent(
 
 @Composable
 fun ForNotesNavRail(
-    navItemList: List<NavItem>,
-    navRailExtras: List<NavItem>,
     currentScreen: Screen,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onClick: (Screen) -> Unit,
+    modifier: Modifier = Modifier,
+    navItem: List<NavItem> = navItemList,
+    navRailExtras: List<NavItem> = navRailItemExtras,
 ) {
     NavigationRail (modifier = modifier) {
         Column {
-            for (navItem in navItemList) {
+            for (navItem in navItem) {
                 NavigationRailItem(
                     selected = currentScreen == navItem.screen,
-                    onClick = onClick,
+                    onClick = { onClick(navItem.screen) },
                     icon = {
                         Icon(
                             imageVector = navItem.icon,
@@ -97,7 +97,7 @@ fun ForNotesNavRail(
             for (navItem in navRailExtras) {
                 NavigationRailItem(
                     selected = currentScreen == navItem.screen,
-                    onClick = onClick,
+                    onClick = { onClick(navItem.screen) },
                     icon = {
                         Icon(
                             imageVector = navItem.icon,
@@ -123,13 +123,13 @@ fun ForNotesNavRail(
 
 @Composable
 fun ForNotesBottomNavBar(
-    navItemList: List<NavItem>,
     onClick: (Screen) -> Unit,
     modifier: Modifier = Modifier,
+    navItems: List<NavItem> = navItemList,
     currentScreen: Screen,
 ) {
     NavigationBar (modifier = modifier) { 
-        for (navItem in navItemList) {
+        for (navItem in navItems) {
             NavigationBarItem(
                 selected = currentScreen == navItem.screen,
                 onClick = { onClick(navItem.screen) },
@@ -205,7 +205,7 @@ data class NavItem (
 fun NavBarPreview() {
     ForNotesTheme (darkTheme = true) {
         ForNotesBottomNavBar(
-            navItemList = navItemList,
+            navItems = navItemList,
             onClick = {},
             modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
             currentScreen = Screen.NotesScreen
@@ -218,7 +218,7 @@ fun NavBarPreview() {
 fun NavRailPreview() {
     ForNotesTheme (darkTheme = true) {
         ForNotesNavRail(
-            navItemList = navItemList,
+            navItem = navItemList,
             navRailExtras = navRailItemExtras,
             currentScreen = Screen.NotesScreen,
             onClick = {},

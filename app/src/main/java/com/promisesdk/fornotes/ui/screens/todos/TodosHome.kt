@@ -29,8 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.promisesdk.fornotes.R
 import com.promisesdk.fornotes.data.TodoDataWithItems
-import com.promisesdk.fornotes.data.TodoItem
-import com.promisesdk.fornotes.data.TodosData
+import com.promisesdk.fornotes.data.sampleTodoDataWithItemsInstance
 import com.promisesdk.fornotes.ui.CompactHomeScreenLayout
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
 import com.promisesdk.fornotes.ui.utils.ForNotesLabels
@@ -215,76 +214,6 @@ fun TodoCard(
         }
     }
 }
-
-val sampleTodoItems = listOf(
-    TodoItem(
-        todoItemId = 1, // Example ID, Room would auto-generate this in a real scenario
-        todosDataId = 1, // Assuming this links to a TodoData with todoId = 1
-        primaryText = "Buy groceries for the week",
-        secondaryTexts = listOf("Milk", "Eggs", "Bread", "Cheese"),
-        isChecked = false,
-        priority = "High"
-    ),
-    TodoItem(
-        todoItemId = 2,
-        todosDataId = 1, // Also part of the same parent Todo list
-        primaryText = "Finish the report for Project X",
-        secondaryTexts = listOf("Include Q4 projections", "Proofread final draft"),
-        isChecked = false,
-        priority = "High"
-    ),
-    TodoItem(
-        todoItemId = 3,
-        todosDataId = 1,
-        primaryText = "Schedule dentist appointment",
-        isChecked = true, // This one is completed
-        priority = "Medium"
-    ),
-    TodoItem(
-        todoItemId = 4,
-        todosDataId = 1, // Belongs to a different TodoData (e.g., todoId = 2)
-        primaryText = "Call John about the weekend plan",
-        secondaryTexts = emptyList(),
-        isChecked = true,
-        priority = "" // No specific priority
-    ),
-    TodoItem(
-        todoItemId = 5,
-        todosDataId = 1,
-        primaryText = "Book flight tickets for vacation",
-        secondaryTexts = listOf("Compare prices on different airlines"),
-        isChecked = false,
-        priority = "Medium"
-    ),
-    TodoItem(
-        todoItemId = 6,
-        todosDataId = 2, // Belongs to yet another TodoData (e.g., todoId = 3)
-        primaryText = "Read a chapter of 'Atomic Habits'",
-        isChecked = true,
-        priority = "Low"
-    ),
-    TodoItem(
-        todoItemId = 7,
-        todosDataId = 2, // Belongs to yet another TodoData (e.g., todoId = 3)
-        primaryText = "Read a chapter of 'Atomic Habits'",
-        isChecked = true,
-        priority = "Low"
-    ),
-)
-
-val sampleTodosDataInstance = TodosData(
-    todoId = 1, // Must match the todosDataId in the TodoItems we want to associate
-    todoTitle = "Work Tasks for Monday",
-    todoLabel = ForNotesLabels.Personal.name, // Example label, you might use your ForNotesLabels enum/class here
-    todoStatus = "In Progress", // Example status
-    creationTimeInMillis = System.currentTimeMillis() // Current time as an example
-)
-
-val sampleTodoDataWithItemsInstance = TodoDataWithItems(
-    todosData = sampleTodosDataInstance,
-    // Filter sampleTodoItems to get only those that belong to sampleTodosDataInstance
-    todoItems = sampleTodoItems.filter { it.todosDataId == sampleTodosDataInstance.todoId }
-)
 
 @Preview (
     showSystemUi = false

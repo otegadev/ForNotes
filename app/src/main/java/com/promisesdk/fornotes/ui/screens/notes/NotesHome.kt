@@ -29,6 +29,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.promisesdk.fornotes.R
 import com.promisesdk.fornotes.data.NotesData
+import com.promisesdk.fornotes.data.sampleNote
+import com.promisesdk.fornotes.data.sampleNotes
 import com.promisesdk.fornotes.ui.CompactHomeScreenLayout
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
 import com.promisesdk.fornotes.ui.utils.ForNotesLabels
@@ -189,38 +191,6 @@ fun NotesCard(
             )
         }
     }
-}
-
-val sampleNote = NotesData(
-    noteId = 0,
-    noteTitle = "Note 1: Lorem ipsum dolor smit",
-    noteContent = "Lorem ipsum dolor smit, Lorem ipsum dolor smit," +
-            "Lorem ipsum dolor smit,Lorem ipsum dolor smit," +
-            "Lorem ipsum dolor smit,Lorem ipsum dolor smit," +
-            "Lorem ipsum dolor smit,Lorem ipsum dolor smit," +
-            "Lorem ipsum dolor smit,Lorem ipsum dolor smit," +
-            "Lorem ipsum dolor smit,Lorem ipsum dolor smit,",
-    noteLabel = "School",
-    creationTimeInMillis = 122
-)
-
-// Let's create a list of sample NotesData instances
-val sampleNotes = List(10) { index ->
-    NotesData(
-        noteId = index,
-        noteTitle = "Note ${index + 1}: Lorem ipsum dolor smit",
-        noteContent = if (index % 2 == 0)
-            "Lorem ipsum dolor smit, Lorem ipsum dolor smit," +
-                "Lorem ipsum dolor smit,Lorem ipsum dolor smit," +
-                "Lorem ipsum dolor smit,Lorem ipsum dolor smit," +
-                "Lorem ipsum dolor smit,Lorem ipsum dolor smit," +
-                "Lorem ipsum dolor smit,Lorem ipsum dolor smit," +
-                "Lorem ipsum dolor smit,Lorem ipsum dolor smit,"
-                    else "Lorem ipsum dolor smit, Lorem ipsum dolor smit," +
-                "Lorem ipsum dolor smit,Lorem ipsum dolor smit,",
-        noteLabel = if (index % 2 == 0) "School" else "Personal", // Alternating labels for variety
-        creationTimeInMillis = (122 + index * 10).toLong() // Varying creation times
-    )
 }
 
 
