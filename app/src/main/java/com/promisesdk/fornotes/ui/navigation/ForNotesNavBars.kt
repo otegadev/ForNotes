@@ -1,8 +1,8 @@
 package com.promisesdk.fornotes.ui.navigation
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Notes
@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.promisesdk.fornotes.R
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
 import com.promisesdk.fornotes.ui.utils.Screen
@@ -66,7 +65,9 @@ fun ForNotesNavRail(
     navRailExtras: List<NavItem> = navRailItemExtras,
 ) {
     NavigationRail (modifier = modifier) {
-        Column {
+        Column (
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
             for (navItem in navItem) {
                 NavigationRailItem(
                     selected = currentScreen == navItem.screen,
@@ -77,12 +78,14 @@ fun ForNotesNavRail(
                             contentDescription = stringResource(navItem.text)
                         )
                     },
-                    modifier = Modifier.padding(
+                    modifier = Modifier
+                        .padding(
                         top = dimensionResource(R.dimen.padding_medium),
                         bottom = dimensionResource(R.dimen.padding_medium),
                         start = dimensionResource(R.dimen.padding_small),
-                        end = dimensionResource(R.dimen.padding_small)
-                    ),
+                        end = dimensionResource(R.dimen.padding_small))
+                        //.weight(1f)
+                    ,
                     enabled = true,
                     label = {
                         Text(
@@ -93,7 +96,7 @@ fun ForNotesNavRail(
                     alwaysShowLabel = true
                 )
             }
-            Spacer(Modifier.height(300.dp))
+            Spacer(modifier = Modifier.weight(1f))
             for (navItem in navRailExtras) {
                 NavigationRailItem(
                     selected = currentScreen == navItem.screen,

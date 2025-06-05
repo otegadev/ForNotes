@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.promisesdk.fornotes.ui.screens.jounals.JournalsHome
 import com.promisesdk.fornotes.ui.screens.notes.NotesHome
 import com.promisesdk.fornotes.ui.screens.todos.TodosHome
+import com.promisesdk.fornotes.ui.utils.ForNotesWindowSize
 import com.promisesdk.fornotes.ui.utils.Screen
 import kotlinx.serialization.Serializable
 
@@ -33,7 +34,9 @@ object Trash
 object Settings
 
 @Composable
-fun ForNotesNavigationHost() {
+fun ForNotesNavigationHost(
+    windowSize: ForNotesWindowSize
+) {
     val navController: NavHostController = rememberNavController()
     var currentScreen: MutableState<Screen> = remember { mutableStateOf(Screen.NotesScreen) }
     NavHost(
@@ -43,6 +46,7 @@ fun ForNotesNavigationHost() {
         composable<Notes> {
             NotesHome(
                 notesList = emptyList(),
+                windowSize = windowSize,
                 onNavItemClick = {
                     currentScreen.value = Screen.NotesScreen
                     navItemNavigation(
@@ -55,6 +59,7 @@ fun ForNotesNavigationHost() {
         composable<Todos> {
             TodosHome(
                 todosList = emptyList(),
+                windowSize = windowSize,
                 onNavItemClick = {
                     currentScreen.value = Screen.TodoScreen
                     navItemNavigation(
@@ -68,6 +73,7 @@ fun ForNotesNavigationHost() {
         composable<Journals> {
             JournalsHome(
                 journalsList = emptyList(),
+                windowSize = windowSize,
                 onNavItemClick = {
                     currentScreen.value = Screen.JournalScreen
                     navItemNavigation(

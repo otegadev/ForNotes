@@ -42,6 +42,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.material3.window.size.class1.android)
     val nav_version = "2.8.9"
     val room_version = "2.7.1"
     val lifecycle_version = "2.8.7"

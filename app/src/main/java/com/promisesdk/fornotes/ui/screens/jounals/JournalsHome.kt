@@ -29,6 +29,8 @@ import com.promisesdk.fornotes.R
 import com.promisesdk.fornotes.data.JournalsData
 import com.promisesdk.fornotes.data.sampleJournalEntry
 import com.promisesdk.fornotes.ui.CompactHomeScreenLayout
+import com.promisesdk.fornotes.ui.ExpandedHomeScreenLayout
+import com.promisesdk.fornotes.ui.MediumHomeScreenLayout
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
 import com.promisesdk.fornotes.ui.utils.ForNotesWindowSize
 import com.promisesdk.fornotes.ui.utils.JournalType
@@ -38,21 +40,55 @@ import com.promisesdk.fornotes.ui.utils.Screen
 @Composable
 fun JournalsHome(
     journalsList: List<JournalsData>,
+    windowSize: ForNotesWindowSize,
     onNavItemClick: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    CompactHomeScreenLayout(
-        screen = Screen.JournalScreen,
-        itemList = {
-            JournalsList(
-                journalList = journalsList,
-                onJournalClick = {},
+
+    when (windowSize) {
+        ForNotesWindowSize.Compact ->
+            CompactHomeScreenLayout(
+                screen = Screen.JournalScreen,
+                itemList = {
+                    JournalsList(
+                        journalList = journalsList,
+                        onJournalClick = {},
+                        modifier = modifier
+                    )
+                },
+                onNavItemClick = onNavItemClick,
+                modifier = modifier,
+            )
+        ForNotesWindowSize.Medium ->
+            MediumHomeScreenLayout(
+                screen = Screen.JournalScreen,
+                itemGrid = {
+                    JournalsGrid(
+                        journalList = journalsList,
+                        onJournalClick = {},
+                        windowSize = windowSize,
+                        modifier = Modifier
+                    )
+                },
+                onNavItemClick = onNavItemClick,
                 modifier = modifier
             )
-        },
-        onNavItemClick = onNavItemClick,
-        modifier = modifier,
-    )
+        ForNotesWindowSize.Expanded ->
+            ExpandedHomeScreenLayout(
+                screen = Screen.JournalScreen,
+                itemGrid = {
+                    JournalsGrid(
+                        journalList = journalsList,
+                        onJournalClick = {},
+                        windowSize = windowSize,
+                        modifier = Modifier
+                    )
+                },
+                onNavItemClick = onNavItemClick,
+                modifier = modifier
+            )
+    }
+
 }
 
 /**
@@ -202,6 +238,7 @@ fun JournalsHomePreview() {
     ) {
         JournalsHome(
             journalsList = emptyList(),
+            windowSize = ForNotesWindowSize.Medium,
             onNavItemClick = {},
             modifier = Modifier
                 //.windowInsetsPadding(WindowInsets.statusBars)

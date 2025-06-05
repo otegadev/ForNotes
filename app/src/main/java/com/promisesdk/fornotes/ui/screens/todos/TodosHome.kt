@@ -31,6 +31,8 @@ import com.promisesdk.fornotes.R
 import com.promisesdk.fornotes.data.TodoDataWithItems
 import com.promisesdk.fornotes.data.sampleTodoDataWithItemsInstance
 import com.promisesdk.fornotes.ui.CompactHomeScreenLayout
+import com.promisesdk.fornotes.ui.ExpandedHomeScreenLayout
+import com.promisesdk.fornotes.ui.MediumHomeScreenLayout
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
 import com.promisesdk.fornotes.ui.utils.ForNotesLabels
 import com.promisesdk.fornotes.ui.utils.ForNotesWindowSize
@@ -39,21 +41,53 @@ import com.promisesdk.fornotes.ui.utils.Screen
 @Composable
 fun TodosHome(
     todosList: List<TodoDataWithItems>,
+    windowSize: ForNotesWindowSize,
     onNavItemClick: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    CompactHomeScreenLayout(
-        screen = Screen.TodoScreen,
-        itemList = {
-            TodosList(
-                todosList = todosList,
-                onTodoClick = {},
+    when (windowSize) {
+        ForNotesWindowSize.Compact ->
+            CompactHomeScreenLayout(
+                screen = Screen.TodoScreen,
+                itemList = {
+                    TodosList(
+                        todosList = todosList,
+                        onTodoClick = {},
+                        modifier = modifier
+                    )
+                },
+                onNavItemClick = onNavItemClick,
                 modifier = modifier
             )
-        },
-        onNavItemClick = onNavItemClick,
-        modifier = modifier
-    )
+        ForNotesWindowSize.Medium ->
+            MediumHomeScreenLayout(
+                screen = Screen.TodoScreen,
+                itemGrid = {
+                    TodosGrid(
+                        todosList = todosList,
+                        onTodoClick = {},
+                        windowSize = windowSize,
+                        modifier = modifier
+                    )
+                },
+                onNavItemClick = onNavItemClick,
+                modifier = Modifier
+            )
+        ForNotesWindowSize.Expanded ->
+            ExpandedHomeScreenLayout(
+                screen = Screen.TodoScreen,
+                itemGrid = {
+                    TodosGrid(
+                        todosList = todosList,
+                        onTodoClick = {},
+                        windowSize = windowSize,
+                        modifier = Modifier
+                    )
+                },
+                onNavItemClick = onNavItemClick,
+                modifier = modifier
+            )
+    }
 }
 
 /**
@@ -239,6 +273,7 @@ fun TodoHomePreview() {
     ForNotesTheme ( darkTheme = false ) {
         TodosHome(
             todosList = emptyList(),
+            windowSize = ForNotesWindowSize.Compact,
             onNavItemClick = {},
             modifier = Modifier
         )

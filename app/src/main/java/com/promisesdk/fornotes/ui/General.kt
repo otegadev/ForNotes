@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Menu
@@ -221,6 +223,7 @@ fun MediumTopAppBar(
             modifier = Modifier
                 .weight(0.5f)
                 .padding(
+                    start = dimensionResource(R.dimen.padding_small),
                     end = dimensionResource(R.dimen.padding_small)
                 )
             ,
@@ -268,7 +271,7 @@ fun MediumTopAppBar(
                         imageVector = navItem.icon,
                         contentDescription = stringResource(navItem.text),
                         modifier = Modifier
-                            .size(40.dp),
+                            .size(32.dp),
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -632,7 +635,9 @@ fun ExpandedHomeScreenLayout(
         ForNotesNavRail(
             currentScreen = screen,
             onClick = onNavItemClick,
-            modifier = Modifier.fillMaxHeight(),
+            modifier = Modifier
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState()),
         )
         Scaffold (
             topBar = {

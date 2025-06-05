@@ -32,6 +32,8 @@ import com.promisesdk.fornotes.data.NotesData
 import com.promisesdk.fornotes.data.sampleNote
 import com.promisesdk.fornotes.data.sampleNotes
 import com.promisesdk.fornotes.ui.CompactHomeScreenLayout
+import com.promisesdk.fornotes.ui.ExpandedHomeScreenLayout
+import com.promisesdk.fornotes.ui.MediumHomeScreenLayout
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
 import com.promisesdk.fornotes.ui.utils.ForNotesLabels
 import com.promisesdk.fornotes.ui.utils.ForNotesWindowSize
@@ -40,21 +42,55 @@ import com.promisesdk.fornotes.ui.utils.Screen
 @Composable
 fun NotesHome(
     notesList: List<NotesData>,
+    windowSize: ForNotesWindowSize,
     onNavItemClick: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    CompactHomeScreenLayout(
-        screen = Screen.NotesScreen,
-        itemList = {
-            NotesList(
-                notesList = notesList,
-                onNoteClick = {},
+    when (windowSize) {
+        ForNotesWindowSize.Compact ->
+            CompactHomeScreenLayout(
+                screen = Screen.NotesScreen,
+                itemList = {
+                    NotesList(
+                        notesList = notesList,
+                        onNoteClick = {},
+                        modifier = Modifier
+                    )
+                },
+                onNavItemClick = onNavItemClick,
+                modifier = modifier,
+            )
+        ForNotesWindowSize.Medium ->
+            MediumHomeScreenLayout(
+                screen = Screen.NotesScreen,
+                itemGrid = {
+                    NotesGrid(
+                        notesList = notesList,
+                        onNoteClick = {},
+                        windowSize = windowSize,
+                        modifier = Modifier
+                            .padding(dimensionResource(R.dimen.padding_medium))
+                    )
+                },
+                onNavItemClick = onNavItemClick,
                 modifier = modifier
             )
-        },
-        onNavItemClick = onNavItemClick,
-        modifier = modifier,
-    )
+        ForNotesWindowSize.Expanded ->
+            ExpandedHomeScreenLayout(
+                screen = Screen.NotesScreen,
+                itemGrid = {
+                    NotesGrid(
+                        notesList = notesList,
+                        onNoteClick = {},
+                        windowSize = windowSize,
+                        modifier = Modifier
+                            .padding(dimensionResource(R.dimen.padding_medium))
+                    )
+                },
+                onNavItemClick = onNavItemClick,
+                modifier = modifier
+            )
+    }
 }
 
 /**
@@ -239,7 +275,8 @@ private fun NotesHomePreview() {
     ) {
         NotesHome(
             notesList = emptyList(),
-            onNavItemClick = {}
+            onNavItemClick = {},
+            windowSize = ForNotesWindowSize.Medium,
         )
     }
 }
