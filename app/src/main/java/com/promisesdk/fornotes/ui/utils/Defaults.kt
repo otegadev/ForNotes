@@ -20,6 +20,7 @@ import androidx.compose.material.icons.rounded.VideogameAsset
 import androidx.compose.material.icons.rounded.Work
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.promisesdk.fornotes.R
 import com.promisesdk.fornotes.data.JournalsData
 import com.promisesdk.fornotes.data.NotesData
 import com.promisesdk.fornotes.data.TodoDataWithItems
@@ -45,6 +46,7 @@ import com.promisesdk.fornotes.ui.theme.customColor6
 import com.promisesdk.fornotes.ui.theme.customColor7
 import com.promisesdk.fornotes.ui.theme.customColor8
 import com.promisesdk.fornotes.ui.theme.customColor9
+
 
 enum class ForNotesLabels (
     val color: Color,
@@ -126,6 +128,28 @@ enum class TodoItemPriority {
     High
 }
 
+enum class TodoStatus (
+    val status: Int,
+    val color: Color
+) {
+    Pending (
+        status = R.string.pending_status,
+        color = customColor4
+    ),
+    InProgress (
+        status = R.string.in_progress_status,
+        color = customColor20
+    ),
+    Completed (
+        status = R.string.completed_status,
+        color = customColor22
+    ),
+    Cancelled (
+        status = R.string.cancelled_status,
+        color = customColor3
+    )
+}
+
 enum class JournalType (
     val journalTypeName: String,
     val color: Color,
@@ -152,12 +176,11 @@ enum class JournalType (
     )
 }
 
-enum class TodoStatus (val status: String) {
-    Pending (status = "Pending"),
-    InProgress (status = "In Progress"),
-    Completed (status = "Completed"),
-    Cancelled (status = "Cancelled")
-}
+class EditScreenActions(
+    val actionName: String,
+    val icon: ImageVector,
+    val onActionClick: () -> Unit
+)
 
 sealed interface SearchResults {
     data class NotesSearchResults(val notes: List<NotesData>) : SearchResults

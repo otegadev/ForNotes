@@ -8,7 +8,6 @@ import androidx.room.PrimaryKey
 import androidx.room.Relation
 import androidx.room.TypeConverter
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 /**
@@ -18,8 +17,8 @@ import kotlinx.serialization.json.Json
 data class NotesData (
     @PrimaryKey(autoGenerate = true)
     val noteId: Int = 0,
-    val noteTitle: String,
-    val noteContent: String,
+    var noteTitle: String,
+    var noteContent: String,
     val noteLabel: String? = null,
     val creationTimeInMillis: Long,
 )
@@ -54,7 +53,7 @@ data class TodosData (
 data class TodoItem(
     @PrimaryKey (autoGenerate = true) val todoItemId: Int = 0,
     val todosDataId: Int,
-    val primaryText: String,
+    var primaryText: String,
     @Serializable val secondaryTexts: List<String> = emptyList(),
     var isChecked: Boolean = false,
     val priority: String = "",

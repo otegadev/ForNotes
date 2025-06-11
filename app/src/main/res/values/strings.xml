@@ -15,4 +15,23 @@
     <string name="create_note">Create a note</string>
     <string name="create_todo">Create a list</string>
     <string name="create_journal">Create a journal</string>
+    <string name="navigate_back">Navigate back</string>
+    <string name="labels">Add/Edit Labels</string>"
+    <string name="share">Share</string>
+    <string name="delete">Move to trash</string>
+    <string name="move_archive">Move to archive</string>"
+    <string name="save">Save</string>
+    <string name="top_bar_actions">Top bar actions</string>"
+    <string name="bold">Bold</string>
+    <string name="italic">Italics</string>
+    <string name="underline">Underline</string>
+    <string name="cut">Cut</string>
+    <string name="copy">Copy</string>
+    <string name="paste">Paste</string>
+    <string name="delete_todo">Delete Todo</string>
+    <string name="add_todo">Add item</string>
+    <string name="pending_status">Pending</string>
+    <string name="in_progress_status">In Progress</string>
+    <string name="completed_status">Completed</string>
+    <string name="cancelled_status">Cancelled</string>"
 </resources>

@@ -1,7 +1,5 @@
 package com.promisesdk.fornotes.ui.screens.todos
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,13 +13,10 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,6 +27,7 @@ import com.promisesdk.fornotes.data.TodoDataWithItems
 import com.promisesdk.fornotes.data.sampleTodoDataWithItemsInstance
 import com.promisesdk.fornotes.ui.CompactHomeScreenLayout
 import com.promisesdk.fornotes.ui.ExpandedHomeScreenLayout
+import com.promisesdk.fornotes.ui.Label
 import com.promisesdk.fornotes.ui.MediumHomeScreenLayout
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
 import com.promisesdk.fornotes.ui.utils.ForNotesLabels
@@ -185,30 +181,9 @@ fun TodoCard(
                     modifier = Modifier.weight(1f)
                 )
                 if (hasLabel) {
-                    Row(
-                        Modifier
-                            .clip(shape = MaterialTheme.shapes.extraLarge)
-                            .background(color = label.color)
-                            .border(
-                                width = 1.dp,
-                                color = Color(0xFF000000),
-                                shape = MaterialTheme.shapes.extraLarge
-                            ),
-                    ) {
-                        Icon(
-                            imageVector = label.icon,
-                            contentDescription = label.name,
-                            modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
-                        )
-                        Text(
-                            text = label.name,
-                            modifier = Modifier.padding(
-                                top = dimensionResource(R.dimen.padding_small),
-                                bottom = dimensionResource(R.dimen.padding_small),
-                                end = dimensionResource(R.dimen.padding_small),
-                            )
-                        )
-                    }
+                    Label(
+                        label = label
+                    )
                 }
 
             }
