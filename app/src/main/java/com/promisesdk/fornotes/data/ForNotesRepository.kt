@@ -3,39 +3,39 @@ package com.promisesdk.fornotes.data
 import kotlinx.coroutines.flow.Flow
 
 interface ForNotesRepository {
-    suspend fun insertNote(note: NotesData)
+    suspend fun insertNote(note: Note)
 
-    suspend fun updateNote(note: NotesData)
+    suspend fun updateNote(note: Note)
 
-    suspend fun deleteNote(note: NotesData)
+    suspend fun deleteNote(note: Note)
 
-    fun getAllNotes(): Flow<List<NotesData>>
+    fun getAllNotes(): Flow<List<Note>>
 
-    fun getNoteByNoteTitleOrContent(queryString: String): Flow<List<NotesData>>
+    fun getNoteByNoteTitleOrContent(queryString: String): Flow<List<Note>>
 
-    fun getNoteByLabel(queryString: String): Flow<List<NotesData>>
+    fun getNoteByLabel(queryString: String): Flow<List<Note>>
 
-    fun getNoteByCreationTime(queryString: Long): Flow<List<NotesData>>
+    fun getNoteByCreationTime(queryString: Long): Flow<List<Note>>
 
-    fun getNoteById(queryString: String): Flow<NotesData>
+    fun getNoteById(queryString: String): Flow<Note>
 
-    suspend fun insertTodo(todo: TodosData)
+    suspend fun insertTodo(todo: Todo)
 
-    suspend fun updateTodo(todo: TodosData)
+    suspend fun updateTodo(todo: Todo)
 
-    suspend fun deleteTodo(todo: TodosData)
+    suspend fun deleteTodo(todo: Todo)
 
-    fun getAllTodos(): Flow<List<TodoDataWithItems>>
+    fun getAllTodos(): Flow<List<TodoWithItems>>
 
-    fun getTodoByTodoTitle(queryString: String): Flow<List<TodoDataWithItems>>
+    fun getTodoByTodoTitle(queryString: String): Flow<List<TodoWithItems>>
 
-    fun getTodoByLabel(queryString: String): Flow<List<TodoDataWithItems>>
+    fun getTodoByLabel(queryString: String): Flow<List<TodoWithItems>>
 
-    fun getTodoByStatus(queryString: String): Flow<List<TodoDataWithItems>>
+    fun getTodoByStatus(queryString: String): Flow<List<TodoWithItems>>
 
-    fun getTodoByCreationTime(queryString: Long): Flow<List<TodoDataWithItems>>
+    fun getTodoByCreationTime(queryString: Long): Flow<List<TodoWithItems>>
 
-    fun getTodoById(queryString: String): Flow<TodoDataWithItems>
+    fun getTodoById(queryString: String): Flow<TodoWithItems>
 
     suspend fun insertTodoItem(todoItem: TodoItem)
 
@@ -45,89 +45,105 @@ interface ForNotesRepository {
 
     fun getAllTodoItems(todosDataId: Int): Flow<List<TodoItem>>
 
-    suspend fun insertJournal(journal: JournalsData)
+    suspend fun insertJournal(journal: Journal)
 
-    suspend fun updateJournal(journal: JournalsData)
+    suspend fun updateJournal(journal: Journal)
 
-    suspend fun deleteJournal(journal: JournalsData)
+    suspend fun deleteJournal(journal: Journal)
 
-    fun getAllJournals(): Flow<List<JournalsData>>
+    fun getAllJournals(): Flow<List<Journal>>
 
-    fun getJournalByJournalNameOrContent(queryString: String): Flow<List<JournalsData>>
+    fun getJournalByJournalNameOrContent(queryString: String): Flow<List<Journal>>
 
-    fun getJournalByJournalType(queryString: String): Flow<List<JournalsData>>
+    fun getJournalByJournalType(queryString: String): Flow<List<Journal>>
 
-    fun getJournalByCreationTime(queryString: Long): Flow<List<JournalsData>>
+    fun getJournalByCreationTime(queryString: Long): Flow<List<Journal>>
 
-    fun getJournalById(queryString: String): Flow<JournalsData>
+    fun getJournalById(id: Int): Flow<Journal>
+
+    suspend fun insertEntry(entry: Entry)
+
+    suspend fun updateEntry(entry: Entry)
+
+    suspend fun deleteEntry(entry: Entry)
+
+    fun getAllEntries(): Flow<List<Entry>>
+
+    fun getEntryById(id : Int): Flow<Entry>
+
+    fun getEntriesByName(name: String): Flow<List<Entry>>
+
+    fun getEntriesByCreationTime(creationTime: Long): Flow<List<Entry>>
+
+    fun getEntriesByContent(content: String): Flow<List<Entry>>
 }
 
 class OfflineForNotesRepository(private val forNotesDao: ForNotesDao): ForNotesRepository {
-    override suspend fun insertNote(note: NotesData) {
+    override suspend fun insertNote(note: Note) {
         forNotesDao.insertNote(note)
     }
 
-    override suspend fun updateNote(note: NotesData) {
+    override suspend fun updateNote(note: Note) {
         forNotesDao.updateNote(note)
     }
 
-    override suspend fun deleteNote(note: NotesData) {
+    override suspend fun deleteNote(note: Note) {
         forNotesDao.deleteNote(note)
     }
 
-    override fun getAllNotes(): Flow<List<NotesData>> {
+    override fun getAllNotes(): Flow<List<Note>> {
         return forNotesDao.getAllNotes()
     }
 
-    override fun getNoteByNoteTitleOrContent(queryString: String): Flow<List<NotesData>> {
+    override fun getNoteByNoteTitleOrContent(queryString: String): Flow<List<Note>> {
         return forNotesDao.getNoteByNoteTitleOrContent(queryString)
     }
 
-    override fun getNoteByLabel(queryString: String): Flow<List<NotesData>> {
+    override fun getNoteByLabel(queryString: String): Flow<List<Note>> {
         return forNotesDao.getNoteByLabel(queryString)
     }
 
-    override fun getNoteByCreationTime(queryString: Long): Flow<List<NotesData>> {
+    override fun getNoteByCreationTime(queryString: Long): Flow<List<Note>> {
         return forNotesDao.getNoteByCreationTime(queryString)
     }
 
-    override fun getNoteById(queryString: String): Flow<NotesData> {
+    override fun getNoteById(queryString: String): Flow<Note> {
         return forNotesDao.getNoteById(queryString)
     }
 
-    override suspend fun insertTodo(todo: TodosData) {
+    override suspend fun insertTodo(todo: Todo) {
         forNotesDao.insertTodo(todo)
     }
 
-    override suspend fun updateTodo(todo: TodosData) {
+    override suspend fun updateTodo(todo: Todo) {
         forNotesDao.updateTodo(todo)
     }
 
-    override suspend fun deleteTodo(todo: TodosData) {
+    override suspend fun deleteTodo(todo: Todo) {
         forNotesDao.deleteTodo(todo)
     }
 
-    override fun getAllTodos(): Flow<List<TodoDataWithItems>> {
+    override fun getAllTodos(): Flow<List<TodoWithItems>> {
         return forNotesDao.getAllTodos()
     }
 
-    override fun getTodoByTodoTitle(queryString: String): Flow<List<TodoDataWithItems>> {
+    override fun getTodoByTodoTitle(queryString: String): Flow<List<TodoWithItems>> {
         return forNotesDao.getTodoByTodoTitle(queryString)
     }
 
-    override fun getTodoByLabel(queryString: String): Flow<List<TodoDataWithItems>> {
+    override fun getTodoByLabel(queryString: String): Flow<List<TodoWithItems>> {
         return forNotesDao.getTodoByLabel(queryString)
     }
 
-    override fun getTodoByStatus(queryString: String): Flow<List<TodoDataWithItems>> {
+    override fun getTodoByStatus(queryString: String): Flow<List<TodoWithItems>> {
         return forNotesDao.getTodoByStatus(queryString)
     }
 
-    override fun getTodoByCreationTime(queryString: Long): Flow<List<TodoDataWithItems>> {
+    override fun getTodoByCreationTime(queryString: Long): Flow<List<TodoWithItems>> {
         return forNotesDao.getTodoByCreationTime(queryString)
     }
 
-    override fun getTodoById(queryString: String): Flow<TodoDataWithItems> {
+    override fun getTodoById(queryString: String): Flow<TodoWithItems> {
         return forNotesDao.getTodoById(queryString)
     }
 
@@ -143,7 +159,7 @@ class OfflineForNotesRepository(private val forNotesDao: ForNotesDao): ForNotesR
         forNotesDao.deleteTodoItem(todoItem)
     }
 
-    override suspend fun insertJournal(journal: JournalsData) {
+    override suspend fun insertJournal(journal: Journal) {
         forNotesDao.insertJournal(journal)
     }
 
@@ -151,32 +167,64 @@ class OfflineForNotesRepository(private val forNotesDao: ForNotesDao): ForNotesR
         return forNotesDao.getAllTodoItems(todosDataId)
     }
 
-    override suspend fun updateJournal(journal: JournalsData) {
+    override suspend fun updateJournal(journal: Journal) {
         forNotesDao.updateJournal(journal)
     }
 
-    override suspend fun deleteJournal(journal: JournalsData) {
+    override suspend fun deleteJournal(journal: Journal) {
         forNotesDao.deleteJournal(journal)
     }
 
-    override fun getAllJournals(): Flow<List<JournalsData>> {
+    override fun getAllJournals(): Flow<List<Journal>> {
         return forNotesDao.getAllJournals()
     }
 
-    override fun getJournalByJournalNameOrContent(queryString: String): Flow<List<JournalsData>> {
-        return forNotesDao.getJournalByJournalNameOrContent(queryString)
+    override fun getJournalByJournalNameOrContent(queryString: String): Flow<List<Journal>> {
+        return forNotesDao.getJournalByJournalName(queryString)
     }
 
-    override fun getJournalByJournalType(queryString: String): Flow<List<JournalsData>> {
+    override fun getJournalByJournalType(queryString: String): Flow<List<Journal>> {
         return forNotesDao.getJournalByJournalType(queryString)
     }
 
-    override fun getJournalByCreationTime(queryString: Long): Flow<List<JournalsData>> {
+    override fun getJournalByCreationTime(queryString: Long): Flow<List<Journal>> {
         return forNotesDao.getJournalByCreationTime(queryString)
     }
 
-    override fun getJournalById(queryString: String): Flow<JournalsData> {
-        return forNotesDao.getJournalById(queryString)
+    override fun getJournalById(id: Int): Flow<Journal> {
+        return forNotesDao.getJournalById(id)
+    }
+
+    override suspend fun insertEntry(entry: Entry) {
+        return forNotesDao.insertEntry(entry)
+    }
+
+    override suspend fun updateEntry(entry: Entry) {
+        return forNotesDao.updateEntry(entry)
+    }
+
+    override suspend fun deleteEntry(entry: Entry) {
+        return forNotesDao.deleteEntry(entry)
+    }
+
+    override fun getAllEntries(): Flow<List<Entry>> {
+        return forNotesDao.getAllEntries()
+    }
+
+    override fun getEntryById(id: Int): Flow<Entry> {
+        return forNotesDao.getEntryById(id)
+    }
+
+    override fun getEntriesByName(name: String): Flow<List<Entry>> {
+        return forNotesDao.getEntriesByName(name)
+    }
+
+    override fun getEntriesByCreationTime(creationTime: Long): Flow<List<Entry>> {
+        return forNotesDao.getEntriesByCreationTime(creationTime)
+    }
+
+    override fun getEntriesByContent(content: String): Flow<List<Entry>> {
+        return forNotesDao.getEntriesByContent(content)
     }
 
 }

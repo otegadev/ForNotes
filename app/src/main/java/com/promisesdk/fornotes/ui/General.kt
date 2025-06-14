@@ -8,23 +8,29 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.ExpandLess
+import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.FloatingActionButtonDefaults.containerColor
@@ -33,8 +39,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
@@ -42,6 +51,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,10 +65,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.promisesdk.fornotes.R
+import com.promisesdk.fornotes.data.ForNotesLabels
+import com.promisesdk.fornotes.data.JournalType
 import com.promisesdk.fornotes.ui.navigation.ForNotesBottomNavBar
 import com.promisesdk.fornotes.ui.navigation.ForNotesNavDrawerContent
 import com.promisesdk.fornotes.ui.navigation.ForNotesNavRail
@@ -70,7 +83,6 @@ import com.promisesdk.fornotes.ui.screens.notes.NotesList
 import com.promisesdk.fornotes.ui.screens.todos.TodosList
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
 import com.promisesdk.fornotes.ui.utils.EditScreenActions
-import com.promisesdk.fornotes.ui.utils.ForNotesLabels
 import com.promisesdk.fornotes.ui.utils.Screen
 import com.promisesdk.fornotes.ui.utils.SearchResults
 import kotlinx.coroutines.launch
@@ -413,6 +425,7 @@ fun CompactHomeScreenLayout(
     screen: Screen,
     itemList: @Composable () -> Unit,
     onNavItemClick: (Screen) -> Unit,
+    onFabClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
@@ -430,7 +443,7 @@ fun CompactHomeScreenLayout(
         else if (screen == Screen.TodoScreen)
             stringResource(R.string.create_todo)
         else if (screen == Screen.JournalScreen)
-            stringResource(R.string.create_journal)
+            stringResource(R.string.create_a_journal)
         else
             null
     ModalNavigationDrawer(
@@ -475,7 +488,7 @@ fun CompactHomeScreenLayout(
             },
             floatingActionButton = {
                 FloatingActionButton(
-                    onClick = {},
+                    onClick = onFabClick,
                     modifier = modifier,
                     shape = FloatingActionButtonDefaults.extendedFabShape,
                     containerColor = containerColor,
@@ -539,6 +552,7 @@ fun MediumHomeScreenLayout(
     screen: Screen,
     itemGrid: @Composable () -> Unit,
     onNavItemClick: (Screen) -> Unit,
+    onFabClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val screenName = if (screen == Screen.NotesScreen)
@@ -555,7 +569,7 @@ fun MediumHomeScreenLayout(
     else if (screen == Screen.TodoScreen)
         stringResource(R.string.create_todo)
     else if (screen == Screen.JournalScreen)
-        stringResource(R.string.create_journal)
+        stringResource(R.string.create_a_journal)
     else
         null
 
@@ -578,7 +592,7 @@ fun MediumHomeScreenLayout(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {},
+                onClick = onFabClick,
                 modifier = modifier,
                 shape = FloatingActionButtonDefaults.extendedFabShape,
                 containerColor = containerColor,
@@ -638,6 +652,7 @@ fun ExpandedHomeScreenLayout(
     screen: Screen,
     itemGrid: @Composable () -> Unit,
     onNavItemClick: (Screen) -> Unit,
+    onFabClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val fabText = if (screen == Screen.NotesScreen)
@@ -645,7 +660,7 @@ fun ExpandedHomeScreenLayout(
     else if (screen == Screen.TodoScreen)
         stringResource(R.string.create_todo)
     else if (screen == Screen.JournalScreen)
-        stringResource(R.string.create_journal)
+        stringResource(R.string.create_a_journal)
     else
         null
 
@@ -673,7 +688,7 @@ fun ExpandedHomeScreenLayout(
             },
             floatingActionButton = {
                 FloatingActionButton(
-                    onClick = {},
+                    onClick = onFabClick,
                     modifier = modifier,
                     shape = FloatingActionButtonDefaults.extendedFabShape,
                     containerColor = containerColor,
@@ -713,29 +728,6 @@ fun ExpandedHomeScreenLayout(
     }
 }
 
-@Preview (
-    showSystemUi = true, showBackground = true, device = "id:pixel_9_pro_xl",
-)
-@Composable
-fun ForNotesTopAppBarPreview() {
-    ForNotesTheme (
-        darkTheme = false
-    ) {
-        CompactTopAppBar(
-            searchBarQuery = "",
-            onQueryChange = {},
-            onSearch = {},
-            onNavigationClick = {},
-            expanded = false,
-            onExpandedChange = {},
-            screen = Screen.JournalScreen,
-            searchResults = SearchResults.NotesSearchResults(emptyList()),
-            onResultClick = {},
-            modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
-        )
-    }
-
-}
 
 @Composable
 fun Label(
@@ -857,9 +849,11 @@ fun EditDropDownMenu(
     }
 }
 
+
 @Preview (
     showSystemUi = true, showBackground = true, device = "spec:width=673dp,height=841dp",
 )
+
 @Composable
 fun MediumAppBarLayoutPreview() {
     ForNotesTheme (
@@ -880,6 +874,30 @@ fun MediumAppBarLayoutPreview() {
                 .padding(dimensionResource(R.dimen.padding_small))
         )
     }
+}
+
+@Preview (
+    showSystemUi = true, showBackground = true, device = "id:pixel_9_pro_xl",
+)
+@Composable
+fun ForNotesTopAppBarPreview() {
+    ForNotesTheme (
+        darkTheme = false
+    ) {
+        CompactTopAppBar(
+            searchBarQuery = "",
+            onQueryChange = {},
+            onSearch = {},
+            onNavigationClick = {},
+            expanded = false,
+            onExpandedChange = {},
+            screen = Screen.JournalScreen,
+            searchResults = SearchResults.NotesSearchResults(emptyList()),
+            onResultClick = {},
+            modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
+        )
+    }
+
 }
 
 @Preview (

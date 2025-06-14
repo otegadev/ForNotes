@@ -49,19 +49,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.promisesdk.fornotes.R
-import com.promisesdk.fornotes.data.NotesData
+import com.promisesdk.fornotes.data.Note
 import com.promisesdk.fornotes.data.sampleNote
 import com.promisesdk.fornotes.ui.EditDropDownMenu
 import com.promisesdk.fornotes.ui.Label
 import com.promisesdk.fornotes.ui.SaveButton
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
 import com.promisesdk.fornotes.ui.utils.EditScreenActions
-import com.promisesdk.fornotes.ui.utils.ForNotesLabels
 import com.promisesdk.fornotes.ui.utils.ForNotesWindowSize
 
 @Composable
 fun NoteEditScreen(
-    notesData: NotesData,
+    notesData: Note,
     onBackPress: () -> Unit,
     forNotesWindowSize: ForNotesWindowSize
 ) {
@@ -87,8 +86,6 @@ fun NoteEditScreen(
     ) { contentPadding ->
         NotesEditTextArea(
             notesData = notesData,
-            label = ForNotesLabels.Personal,
-            hasLabel = true,
             interactionSource = interactionSource,
             modifier = Modifier
                 .padding(contentPadding)
@@ -264,9 +261,7 @@ fun NotesEditBottomBar(
 
 @Composable
 fun NotesEditTextArea (
-    notesData: NotesData,
-    label: ForNotesLabels,
-    hasLabel: Boolean,
+    notesData: Note,
     interactionSource: MutableInteractionSource,
     modifier: Modifier = Modifier
 ) {
@@ -281,9 +276,9 @@ fun NotesEditTextArea (
             verticalAlignment = Alignment.CenterVertically
         ) {
             TextField(
-                value = notesData.noteTitle,
+                value = notesData.title,
                 onValueChange = {
-                    notesData.noteTitle = it
+                    notesData.title = it
                 },
                 textStyle = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
                 colors = TextFieldDefaults.colors(
@@ -297,16 +292,16 @@ fun NotesEditTextArea (
                     .padding(dimensionResource(R.dimen.padding_very_small)),
                 interactionSource = interactionSource
             )
-            if (hasLabel) {
+            if (notesData.label != null) {
                 Label(
-                    label = label
+                    label = notesData.label
                 )
             }
         }
         TextField(
-            value = notesData.noteContent,
+            value = notesData.content,
             onValueChange = {
-                notesData.noteContent = it
+                notesData.content = it
             },
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
@@ -333,9 +328,7 @@ fun NotesEditTextArea (
 )
 @Composable
 fun NotesEditTopBarPreview() {
-    ForNotesTheme (
-
-    ) {
+    ForNotesTheme {
         NotesEditTopAppBar(
             onBackPress = { },
             windowSize = ForNotesWindowSize.Compact,
@@ -362,8 +355,6 @@ fun NotesEditTextAreaPreview() {
     ForNotesTheme {
         NotesEditTextArea(
             notesData = sampleNote,
-            label = ForNotesLabels.Personal,
-            hasLabel = true,
             interactionSource = rememberSaveable { MutableInteractionSource() }
         )
     }

@@ -7,12 +7,12 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database (
-    entities = [NotesData::class, TodosData::class, TodoItem::class, JournalsData::class],
+    entities = [Note::class, Todo::class, TodoItem::class, Journal::class, Entry::class],
     version = 1,
     exportSchema = false
 )
 @TypeConverters(
-    StringListConverter::class
+    Converter::class
 )
 abstract class ForNotesDatabase: RoomDatabase() {
     abstract val forNotesDao: ForNotesDao

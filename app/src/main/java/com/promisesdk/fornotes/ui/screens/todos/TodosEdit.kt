@@ -45,32 +45,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.promisesdk.fornotes.R
-import com.promisesdk.fornotes.data.TodoDataWithItems
+import com.promisesdk.fornotes.data.TodoWithItems
 import com.promisesdk.fornotes.data.TodoItem
+import com.promisesdk.fornotes.data.TodoStatus
 import com.promisesdk.fornotes.data.sampleTodoDataWithItemsInstance
 import com.promisesdk.fornotes.data.sampleTodoItems
 import com.promisesdk.fornotes.ui.EditDropDownMenu
 import com.promisesdk.fornotes.ui.Label
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
 import com.promisesdk.fornotes.ui.utils.EditScreenActions
-import com.promisesdk.fornotes.ui.utils.ForNotesLabels
 import com.promisesdk.fornotes.ui.utils.ForNotesWindowSize
-import com.promisesdk.fornotes.ui.utils.TodoStatus
 
 @Composable
 fun TodoEditScreen(
-    todoData: TodoDataWithItems,
+    todoWithItems: TodoWithItems,
     onBackPress: () -> Unit,
     forNotesWindowSize: ForNotesWindowSize,
 ) {
-    val todoStatus: TodoStatus = TodoStatus.InProgress
 
     Scaffold (
         topBar = {
             TodoEditTopBar(
                 onBackPress = onBackPress,
                 windowSize = forNotesWindowSize,
-                todoStatus = todoStatus,
+                todoStatus = todoWithItems.todo.status,
                 modifier = Modifier
                     .fillMaxWidth()
                     .windowInsetsPadding(WindowInsets.statusBars)
@@ -78,11 +76,9 @@ fun TodoEditScreen(
         }
     ) { contentPadding ->
         TodoEditContent(
-            todoData = todoData,
+            todoWithItems = todoWithItems,
             onValueChange = {},
             onItemCreate = {},
-            label = ForNotesLabels.Work,
-            hasLabel = true,
             modifier = Modifier.padding(contentPadding)
         )
     }
@@ -182,11 +178,9 @@ fun TodoEditTopBar (
 
 @Composable
 fun TodoEditContent(
-    todoData: TodoDataWithItems,
+    todoWithItems: TodoWithItems,
     onValueChange: (String) -> Unit,
     onItemCreate: () -> Unit,
-    label: ForNotesLabels,
-    hasLabel: Boolean,
     modifier: Modifier
 ) {
     var interactionSource = rememberSaveable { MutableInteractionSource() }
@@ -199,7 +193,7 @@ fun TodoEditContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             BasicTextField(
-                value = todoData.todosData.todoTitle,
+                value = todoWithItems.todo.title,
                 onValueChange = onValueChange,
                 modifier = Modifier
                     .padding(dimensionResource(R.dimen.padding_small))
@@ -210,16 +204,16 @@ fun TodoEditContent(
                         color = MaterialTheme.colorScheme.onSurface
                     )
             )
-            if (hasLabel) {
+            if (todoWithItems.todo.label != null) {
                 Label(
-                    label = label
+                    label = todoWithItems.todo.label,
                 )
             }
         }
         LazyColumn {
             items (
-                items = todoData.todoItems,
-                key = { todoItem -> todoItem.todoItemId }
+                items = todoWithItems.todoItems,
+                key = { todoItem -> todoItem.id }
             ) { todoItem ->
                 TodoItem(
                     todoItem = todoItem,
@@ -375,11 +369,9 @@ fun TodoItemPreview() {
 fun TodoEditContentPreview() {
     ForNotesTheme {
         TodoEditContent(
-            todoData = sampleTodoDataWithItemsInstance,
+            todoWithItems = sampleTodoDataWithItemsInstance,
             onValueChange = {},
             onItemCreate = {},
-            label = ForNotesLabels.Work,
-            hasLabel = true,
             modifier = Modifier.padding(8.dp)
         )
     }
@@ -409,7 +401,7 @@ fun TodoEditScreenPreview() {
         darkTheme = true
     ) {
         TodoEditScreen(
-            todoData = sampleTodoDataWithItemsInstance,
+            todoWithItems = sampleTodoDataWithItemsInstance,
             onBackPress = {},
             forNotesWindowSize = ForNotesWindowSize.Compact,
         )

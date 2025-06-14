@@ -23,20 +23,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.promisesdk.fornotes.R
-import com.promisesdk.fornotes.data.TodoDataWithItems
+import com.promisesdk.fornotes.data.TodoWithItems
 import com.promisesdk.fornotes.data.sampleTodoDataWithItemsInstance
 import com.promisesdk.fornotes.ui.CompactHomeScreenLayout
 import com.promisesdk.fornotes.ui.ExpandedHomeScreenLayout
 import com.promisesdk.fornotes.ui.Label
 import com.promisesdk.fornotes.ui.MediumHomeScreenLayout
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
-import com.promisesdk.fornotes.ui.utils.ForNotesLabels
 import com.promisesdk.fornotes.ui.utils.ForNotesWindowSize
 import com.promisesdk.fornotes.ui.utils.Screen
 
 @Composable
 fun TodosHome(
-    todosList: List<TodoDataWithItems>,
+    todosList: List<TodoWithItems>,
     windowSize: ForNotesWindowSize,
     onNavItemClick: (Screen) -> Unit,
     modifier: Modifier = Modifier
@@ -52,6 +51,7 @@ fun TodosHome(
                         modifier = modifier
                     )
                 },
+                onFabClick = {},
                 onNavItemClick = onNavItemClick,
                 modifier = modifier
             )
@@ -67,6 +67,7 @@ fun TodosHome(
                     )
                 },
                 onNavItemClick = onNavItemClick,
+                onFabClick = {},
                 modifier = Modifier
             )
         ForNotesWindowSize.Expanded ->
@@ -81,6 +82,7 @@ fun TodosHome(
                     )
                 },
                 onNavItemClick = onNavItemClick,
+                onFabClick = {},
                 modifier = modifier
             )
     }
@@ -91,7 +93,7 @@ fun TodosHome(
  */
 @Composable
 fun TodosGrid(
-    todosList: List<TodoDataWithItems>,
+    todosList: List<TodoWithItems>,
     onTodoClick: () -> Unit,
     windowSize: ForNotesWindowSize,
     modifier: Modifier = Modifier
@@ -109,19 +111,17 @@ fun TodosGrid(
     ) {
         items (
             items = todosList,
-            key = {todo -> todo.todosData.todoId}
+            key = {todo -> todo.todo.id}
         ) { todo ->
             TodoCard(
-                todoData = todo,
-                hasLabel = true,
-                label = ForNotesLabels.Work,
+                todoWithItems = todo,
                 modifier = Modifier
                     .padding(dimensionResource(R.dimen.padding_small))
                     .clickable(
                         onClick = onTodoClick,
                         onClickLabel = stringResource(
                             R.string.navigate_to_this_todo,
-                            todo.todosData.todoTitle
+                            todo.todo.title
                         )
                     )
             )
@@ -134,7 +134,7 @@ fun TodosGrid(
  */
 @Composable
 fun TodosList(
-    todosList: List<TodoDataWithItems>,
+    todosList: List<TodoWithItems>,
     onTodoClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -143,19 +143,17 @@ fun TodosList(
     ) {
         items(
             items = todosList,
-            key = {todo -> todo.todosData.todoId}
+            key = {todo -> todo.todo.id}
         ) { todo ->
             TodoCard(
-                todoData = todo,
-                hasLabel = true,
-                label = ForNotesLabels.Work,
+                todoWithItems = todo,
                 modifier = Modifier
                     .padding(dimensionResource(R.dimen.padding_small))
                     .clickable(
                         onClick = onTodoClick,
                         onClickLabel = stringResource(
                             R.string.navigate_to_this_todo,
-                            todo.todosData.todoTitle
+                            todo.todo.title
                         )
                     )
             )
@@ -165,24 +163,22 @@ fun TodosList(
 
 @Composable
 fun TodoCard(
-    todoData: TodoDataWithItems,
-    hasLabel: Boolean,
-    label: ForNotesLabels,
+    todoWithItems: TodoWithItems,
     modifier: Modifier = Modifier
 ) {
-    val firstFiveItems = todoData.todoItems.subList(0, 5)
+    val firstFiveItems = todoWithItems.todoItems.subList(0, 5)
     Card (modifier = modifier){
         Column (modifier = Modifier.padding(dimensionResource(R.dimen.padding_large))) {
             Row {
                 Text(
-                    text = todoData.todosData.todoTitle,
+                    text = todoWithItems.todo.title,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
                 )
-                if (hasLabel) {
+                if (todoWithItems.todo.label != null) {
                     Label(
-                        label = label
+                        label = todoWithItems.todo.label
                     )
                 }
 
@@ -190,7 +186,7 @@ fun TodoCard(
             LazyColumn {
                items (
                    items = firstFiveItems,
-                   key = {todo -> todo.todoItemId}
+                   key = {todo -> todo.id}
                ) { todo ->
                    Row {
                        Checkbox(
@@ -231,9 +227,7 @@ fun TodoCard(
 fun TodoCardPreview() {
     ForNotesTheme (darkTheme = false) {
         TodoCard(
-            todoData = sampleTodoDataWithItemsInstance,
-            hasLabel = true,
-            label = ForNotesLabels.Work,
+            todoWithItems = sampleTodoDataWithItemsInstance,
             modifier = Modifier.padding(8.dp)
         )
     }

@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.promisesdk.fornotes.R
-import com.promisesdk.fornotes.data.NotesData
+import com.promisesdk.fornotes.data.Note
 import com.promisesdk.fornotes.data.sampleNote
 import com.promisesdk.fornotes.data.sampleNotes
 import com.promisesdk.fornotes.ui.CompactHomeScreenLayout
@@ -31,13 +31,12 @@ import com.promisesdk.fornotes.ui.ExpandedHomeScreenLayout
 import com.promisesdk.fornotes.ui.Label
 import com.promisesdk.fornotes.ui.MediumHomeScreenLayout
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
-import com.promisesdk.fornotes.ui.utils.ForNotesLabels
 import com.promisesdk.fornotes.ui.utils.ForNotesWindowSize
 import com.promisesdk.fornotes.ui.utils.Screen
 
 @Composable
 fun NotesHome(
-    notesList: List<NotesData>,
+    notesList: List<Note>,
     windowSize: ForNotesWindowSize,
     onNavItemClick: (Screen) -> Unit,
     modifier: Modifier = Modifier
@@ -54,6 +53,7 @@ fun NotesHome(
                     )
                 },
                 onNavItemClick = onNavItemClick,
+                onFabClick = {},
                 modifier = modifier,
             )
         ForNotesWindowSize.Medium ->
@@ -69,6 +69,7 @@ fun NotesHome(
                     )
                 },
                 onNavItemClick = onNavItemClick,
+                onFabClick = {},
                 modifier = modifier
             )
         ForNotesWindowSize.Expanded ->
@@ -84,6 +85,7 @@ fun NotesHome(
                     )
                 },
                 onNavItemClick = onNavItemClick,
+                onFabClick = {},
                 modifier = modifier
             )
     }
@@ -94,7 +96,7 @@ fun NotesHome(
  */
 @Composable
 fun NotesGrid(
-    notesList: List<NotesData>,
+    notesList: List<Note>,
     onNoteClick: () -> Unit,
     windowSize: ForNotesWindowSize,
     modifier: Modifier = Modifier
@@ -112,19 +114,17 @@ fun NotesGrid(
     ) {
         items (
             items = notesList,
-            key = {note -> note.noteId}
+            key = {note -> note.id}
         ) { note ->
             NotesCard(
                 notesData = note,
-                hasLabel = true,
-                label = ForNotesLabels.Personal,
                 modifier = Modifier
                     .padding(dimensionResource(R.dimen.padding_very_small))
                     .clickable(
                         onClick = onNoteClick,
                         onClickLabel = stringResource(
                             R.string.navigate_to_this_note,
-                            note.noteTitle
+                            note.title
                         )
                     )
             )
@@ -137,7 +137,7 @@ fun NotesGrid(
  */
 @Composable
 fun NotesList(
-    notesList: List<NotesData>,
+    notesList: List<Note>,
     onNoteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -146,19 +146,17 @@ fun NotesList(
     ) {
         items(
             items = notesList,
-            key = {note -> note.noteId}
+            key = {note -> note.id}
         ) { note ->
             NotesCard(
                 notesData = note,
-                hasLabel = true,
-                label = ForNotesLabels.Personal,
                 modifier = Modifier
                     .padding(8.dp)
                     .clickable(
                         onClick = onNoteClick,
                         onClickLabel = stringResource(
                             R.string.navigate_to_this_note,
-                            note.noteTitle
+                            note.title
                         )
                     )
             )
@@ -171,30 +169,28 @@ fun NotesList(
  */
 @Composable
 fun NotesCard(
-    notesData: NotesData,
-    hasLabel: Boolean,
-    label: ForNotesLabels,
+    notesData: Note,
     modifier: Modifier = Modifier,
 ) {
     Card (modifier = modifier) {
         Column (modifier = Modifier.padding(dimensionResource(R.dimen.padding_large))) {
             Row {
                 Text(
-                    text = notesData.noteTitle,
+                    text = notesData.title,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
                 )
                 //Spacer(modifier = Modifier.width(150.dp))
-                if (hasLabel) {
+                if (notesData.label != null) {
                     Label(
-                        label = label
+                        label = notesData.label
                     )
                 }
 
             }
             Text(
-                text = notesData.noteContent,
+                text = notesData.content,
                 style = MaterialTheme.typography.bodyLarge,
                 maxLines = 5,
                 overflow = TextOverflow.Ellipsis,
@@ -233,8 +229,6 @@ private fun NotesItemCardPreview() {
     ) {
         NotesCard(
             notesData = sampleNote,
-            hasLabel = true,
-            label = ForNotesLabels.Personal,
             modifier = Modifier.padding(8.dp)
         )
     }

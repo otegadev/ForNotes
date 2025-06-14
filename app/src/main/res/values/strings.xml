@@ -14,7 +14,7 @@
     <string name="search_icon">Search</string>
     <string name="create_note">Create a note</string>
     <string name="create_todo">Create a list</string>
-    <string name="create_journal">Create a journal</string>
+    <string name="create_a_journal">Create a journal</string>
     <string name="navigate_back">Navigate back</string>
     <string name="labels">Add/Edit Labels</string>"
     <string name="share">Share</string>
@@ -34,4 +34,10 @@
     <string name="in_progress_status">In Progress</string>
     <string name="completed_status">Completed</string>
     <string name="cancelled_status">Cancelled</string>"
+    <string name="journal_name">Journal name</string>
+    <string name="journal_description">Journal description</string>
+    <string name="journal_type">Journal type</string>
+    <string name="expand_more">Expand more</string>
+    <string name="expand_less">Expand less</string>
+    <string name="create_journal">Create journal</string>
 </resources>
