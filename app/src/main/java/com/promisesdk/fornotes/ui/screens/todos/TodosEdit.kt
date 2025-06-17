@@ -18,13 +18,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.automirrored.rounded.Label
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Archive
 import androidx.compose.material.icons.rounded.Checklist
 import androidx.compose.material.icons.rounded.Clear
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.Icon
@@ -45,16 +41,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.promisesdk.fornotes.R
-import com.promisesdk.fornotes.data.TodoWithItems
 import com.promisesdk.fornotes.data.TodoItem
 import com.promisesdk.fornotes.data.TodoStatus
+import com.promisesdk.fornotes.data.TodoWithItems
 import com.promisesdk.fornotes.data.sampleTodoDataWithItemsInstance
 import com.promisesdk.fornotes.data.sampleTodoItems
 import com.promisesdk.fornotes.ui.EditDropDownMenu
 import com.promisesdk.fornotes.ui.Label
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
-import com.promisesdk.fornotes.ui.utils.EditScreenActions
 import com.promisesdk.fornotes.ui.utils.ForNotesWindowSize
+import com.promisesdk.fornotes.ui.utils.defaultTopBarActions
 
 @Composable
 fun TodoEditScreen(
@@ -91,28 +87,7 @@ fun TodoEditTopBar (
     todoStatus: TodoStatus,
     modifier: Modifier = Modifier
 ) {
-    val topBarActions = listOf(
-        EditScreenActions(
-            actionName = stringResource(R.string.labels),
-            icon = Icons.AutoMirrored.Rounded.Label,
-            onActionClick = {}
-        ),
-        EditScreenActions(
-            actionName = stringResource(R.string.share),
-            icon = Icons.Rounded.Share,
-            onActionClick = {}
-        ),
-        EditScreenActions(
-            actionName = stringResource(R.string.delete),
-            icon = Icons.Rounded.Delete,
-            onActionClick = {}
-        ),
-        EditScreenActions(
-            actionName = stringResource(R.string.move_archive),
-            icon = Icons.Rounded.Archive,
-            onActionClick = {}
-        )
-    )
+    val topBarActions = defaultTopBarActions
     Row (
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -153,7 +128,7 @@ fun TodoEditTopBar (
                     ) {
                         Icon(
                             imageVector = action.icon,
-                            contentDescription = action.actionName,
+                            contentDescription = stringResource(action.actionName),
                             modifier = Modifier.size(28.dp)
                         )
                     }

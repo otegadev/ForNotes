@@ -15,6 +15,7 @@
     <string name="create_note">Create a note</string>
     <string name="create_todo">Create a list</string>
     <string name="create_a_journal">Create a journal</string>
+    <string name="add_entry">New entry</string>
     <string name="navigate_back">Navigate back</string>
     <string name="labels">Add/Edit Labels</string>"
     <string name="share">Share</string>
@@ -40,4 +41,6 @@
     <string name="expand_more">Expand more</string>
     <string name="expand_less">Expand less</string>
     <string name="create_journal">Create journal</string>
+    <string name="entries">Entries</string>
+    <string name="search_entries">Search entries</string>
 </resources>

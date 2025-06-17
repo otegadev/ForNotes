@@ -21,16 +21,12 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.automirrored.rounded.Label
-import androidx.compose.material.icons.rounded.Archive
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.ContentCut
 import androidx.compose.material.icons.rounded.ContentPaste
-import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.FormatBold
 import androidx.compose.material.icons.rounded.FormatItalic
 import androidx.compose.material.icons.rounded.FormatUnderlined
-import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -57,6 +53,7 @@ import com.promisesdk.fornotes.ui.SaveButton
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
 import com.promisesdk.fornotes.ui.utils.EditScreenActions
 import com.promisesdk.fornotes.ui.utils.ForNotesWindowSize
+import com.promisesdk.fornotes.ui.utils.defaultTopBarActions
 
 @Composable
 fun NoteEditScreen(
@@ -100,28 +97,7 @@ fun NotesEditTopAppBar(
     windowSize: ForNotesWindowSize,
     modifier: Modifier = Modifier
 ) {
-    val topBarActions = listOf(
-        EditScreenActions(
-            actionName = stringResource(R.string.labels),
-            icon = Icons.AutoMirrored.Rounded.Label,
-            onActionClick = {}
-        ),
-        EditScreenActions(
-            actionName = stringResource(R.string.share),
-            icon = Icons.Rounded.Share,
-            onActionClick = {}
-        ),
-        EditScreenActions(
-            actionName = stringResource(R.string.delete),
-            icon = Icons.Rounded.Delete,
-            onActionClick = {}
-        ),
-        EditScreenActions(
-            actionName = stringResource(R.string.move_archive),
-            icon = Icons.Rounded.Archive,
-            onActionClick = {}
-        )
-    )
+    val topBarActions = defaultTopBarActions
 
     Row (
         modifier = modifier,
@@ -157,7 +133,7 @@ fun NotesEditTopAppBar(
                     ) {
                         Icon(
                             imageVector = action.icon,
-                            contentDescription = action.actionName,
+                            contentDescription = stringResource(action.actionName),
                             modifier = Modifier.size(28.dp)
                         )
                     }
@@ -182,32 +158,32 @@ fun NotesEditBottomBar(
 ) {
     val bottomBarActions: List<EditScreenActions> = listOf(
         EditScreenActions(
-            actionName = stringResource(R.string.bold),
+            actionName = R.string.bold,
             icon = Icons.Rounded.FormatBold,
             onActionClick = {}
         ),
         EditScreenActions(
-            actionName = stringResource(R.string.italic),
+            actionName = R.string.italic,
             icon = Icons.Rounded.FormatItalic,
             onActionClick = {}
         ),
         EditScreenActions(
-            actionName = stringResource(R.string.underline),
+            actionName = R.string.underline,
             icon = Icons.Rounded.FormatUnderlined,
             onActionClick = {}
         ),
         EditScreenActions(
-            actionName = stringResource(R.string.cut),
+            actionName = R.string.cut,
             icon = Icons.Rounded.ContentCut,
             onActionClick = {}
         ),
         EditScreenActions(
-            actionName = stringResource(R.string.copy),
+            actionName = R.string.copy,
             icon = Icons.Rounded.ContentCopy,
             onActionClick = {}
         ),
         EditScreenActions(
-            actionName = stringResource(R.string.paste),
+            actionName = R.string.paste,
             icon = Icons.Rounded.ContentPaste,
             onActionClick = {}
         ),
@@ -249,7 +225,7 @@ fun NotesEditBottomBar(
                     ) {
                         Icon(
                             imageVector = action.icon,
-                            contentDescription = action.actionName,
+                            contentDescription = stringResource(action.actionName),
                             modifier = Modifier.size(28.dp)
                         )
                     }

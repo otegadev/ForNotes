@@ -8,29 +8,23 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.ExpandLess
-import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.FloatingActionButtonDefaults.containerColor
@@ -39,11 +33,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
@@ -51,7 +42,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberDrawerState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -65,13 +55,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.promisesdk.fornotes.R
 import com.promisesdk.fornotes.data.ForNotesLabels
-import com.promisesdk.fornotes.data.JournalType
 import com.promisesdk.fornotes.ui.navigation.ForNotesBottomNavBar
 import com.promisesdk.fornotes.ui.navigation.ForNotesNavDrawerContent
 import com.promisesdk.fornotes.ui.navigation.ForNotesNavRail
@@ -418,7 +406,7 @@ fun ExpandedTopAppBar(
 }
 
 /**
- * General composable for notes, todos and journal screens on compact devices
+ * General composable for notes, todos and journal home screens on compact devices
  */
 @Composable
 fun CompactHomeScreenLayout(
@@ -438,14 +426,7 @@ fun CompactHomeScreenLayout(
             stringResource(R.string.journals)
         else
             null
-    val fabText = if (screen == Screen.NotesScreen)
-        stringResource(R.string.create_note)
-        else if (screen == Screen.TodoScreen)
-            stringResource(R.string.create_todo)
-        else if (screen == Screen.JournalScreen)
-            stringResource(R.string.create_a_journal)
-        else
-            null
+
     ModalNavigationDrawer(
         drawerContent = {
             ModalDrawerSheet {
@@ -487,37 +468,11 @@ fun CompactHomeScreenLayout(
                 )
             },
             floatingActionButton = {
-                FloatingActionButton(
+                HomeScreenFab(
+                    screen = screen,
                     onClick = onFabClick,
-                    modifier = modifier,
-                    shape = FloatingActionButtonDefaults.extendedFabShape,
-                    containerColor = containerColor,
-                    contentColor = contentColorFor(containerColor),
-                    elevation = FloatingActionButtonDefaults.elevation(
-                        defaultElevation = 8.dp,
-                        pressedElevation = 4.dp
-                    ),
-                ) {
-                    Row (
-                        modifier = Modifier.padding(8.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Add,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(36.dp)
-                        )
-                        Text(
-                            text = fabText.toString(),
-                            style = MaterialTheme.typography.labelLarge,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                    }
-                }
+                    modifier = modifier
+                )
             },
             bottomBar = {
                 ForNotesBottomNavBar(
@@ -564,14 +519,6 @@ fun MediumHomeScreenLayout(
     else
         null
 
-    val fabText = if (screen == Screen.NotesScreen)
-        stringResource(R.string.create_note)
-    else if (screen == Screen.TodoScreen)
-        stringResource(R.string.create_todo)
-    else if (screen == Screen.JournalScreen)
-        stringResource(R.string.create_a_journal)
-    else
-        null
 
     Scaffold (
         modifier = modifier,
@@ -591,37 +538,11 @@ fun MediumHomeScreenLayout(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
+            HomeScreenFab(
+                screen = screen,
                 onClick = onFabClick,
-                modifier = modifier,
-                shape = FloatingActionButtonDefaults.extendedFabShape,
-                containerColor = containerColor,
-                contentColor = contentColorFor(containerColor),
-                elevation = FloatingActionButtonDefaults.elevation(
-                    defaultElevation = 8.dp,
-                    pressedElevation = 4.dp
-                ),
-            ) {
-                Row (
-                    modifier = Modifier.padding(8.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Add,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(36.dp)
-                    )
-                    Text(
-                        text = fabText.toString(),
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(8.dp)
-                    )
-                }
-            }
+                modifier = modifier
+            )
         },
         bottomBar = {
             ForNotesBottomNavBar(
@@ -655,15 +576,6 @@ fun ExpandedHomeScreenLayout(
     onFabClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val fabText = if (screen == Screen.NotesScreen)
-        stringResource(R.string.create_note)
-    else if (screen == Screen.TodoScreen)
-        stringResource(R.string.create_todo)
-    else if (screen == Screen.JournalScreen)
-        stringResource(R.string.create_a_journal)
-    else
-        null
-
     Row {
         ForNotesNavRail(
             currentScreen = screen,
@@ -687,37 +599,11 @@ fun ExpandedHomeScreenLayout(
                 )
             },
             floatingActionButton = {
-                FloatingActionButton(
+                HomeScreenFab(
+                    screen = screen,
                     onClick = onFabClick,
-                    modifier = modifier,
-                    shape = FloatingActionButtonDefaults.extendedFabShape,
-                    containerColor = containerColor,
-                    contentColor = contentColorFor(containerColor),
-                    elevation = FloatingActionButtonDefaults.elevation(
-                        defaultElevation = 8.dp,
-                        pressedElevation = 4.dp
-                    ),
-                ) {
-                    Row (
-                        modifier = Modifier.padding(8.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Add,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(36.dp)
-                        )
-                        Text(
-                            text = fabText.toString(),
-                            style = MaterialTheme.typography.labelLarge,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                    }
-                }
+                    modifier = modifier
+                )
             },
         ) { contentPadding ->
             Column (modifier = Modifier.padding(contentPadding)) {
@@ -728,6 +614,52 @@ fun ExpandedHomeScreenLayout(
     }
 }
 
+@Composable
+fun HomeScreenFab(
+    screen: Screen,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val fabText = if (screen == Screen.NotesScreen)
+        stringResource(R.string.create_note)
+    else if (screen == Screen.TodoScreen)
+        stringResource(R.string.create_todo)
+    else if (screen == Screen.JournalScreen)
+        stringResource(R.string.create_a_journal)
+    else
+        null
+    FloatingActionButton(
+        onClick = onClick,
+        modifier = modifier,
+        shape = FloatingActionButtonDefaults.extendedFabShape,
+        containerColor = containerColor,
+        contentColor = contentColorFor(containerColor),
+        elevation = FloatingActionButtonDefaults.elevation(
+            defaultElevation = 8.dp,
+            pressedElevation = 4.dp
+        ),
+    ) {
+        Row (
+            modifier = Modifier.padding(8.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.Add,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(36.dp)
+            )
+            Text(
+                text = fabText.toString(),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+    }
+}
 
 @Composable
 fun Label(
@@ -828,7 +760,7 @@ fun EditDropDownMenu(
                 DropdownMenuItem(
                     text = {
                         Text(
-                            text = option.actionName,
+                            text = stringResource(option.actionName),
                         )
                     },
                     onClick = {
@@ -839,7 +771,7 @@ fun EditDropDownMenu(
                     leadingIcon = {
                         Icon(
                             imageVector = option.icon,
-                            contentDescription = option.actionName
+                            contentDescription = stringResource(option.actionName)
                         )
                     },
                     enabled = true,
