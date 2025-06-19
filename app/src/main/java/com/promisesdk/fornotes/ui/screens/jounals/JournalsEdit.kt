@@ -1,13 +1,15 @@
 package com.promisesdk.fornotes.ui.screens.jounals
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.EditCalendar
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,6 +35,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,6 +46,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -55,7 +61,9 @@ import com.promisesdk.fornotes.data.JournalWithEntries
 import com.promisesdk.fornotes.data.sampleEntry
 import com.promisesdk.fornotes.data.sampleJournalEntry
 import com.promisesdk.fornotes.data.sampleJournalWithEntries
+import com.promisesdk.fornotes.ui.EditBottomBar
 import com.promisesdk.fornotes.ui.EditDropDownMenu
+import com.promisesdk.fornotes.ui.SaveButton
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
 import com.promisesdk.fornotes.ui.utils.ForNotesWindowSize
 import com.promisesdk.fornotes.ui.utils.defaultTopBarActions
@@ -64,7 +72,195 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun EntryEditScreen(
+    entry: Entry,
+    windowSize: ForNotesWindowSize,
+    onBackPress: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var interactionSource = rememberSaveable { MutableInteractionSource() }
+    var isFocused = interactionSource.collectIsFocusedAsState()
+
+    Scaffold (
+        topBar = {
+            EntryEditTopBar(
+                onBackPress = onBackPress,
+                windowSize = windowSize
+            )
+        },
+        bottomBar = {
+            EditBottomBar(
+                inEditMode = isFocused.value
+            )
+        }
+    ) { contentPadding ->
+        EntryEditTextArea(
+            entry = entry,
+            interactionSource = interactionSource,
+            modifier = modifier.padding(contentPadding)
+        )
+    }
+}
+
+@Composable
+fun EntryEditTextArea(
+    entry: Entry,
+    interactionSource: MutableInteractionSource,
+    modifier: Modifier = Modifier
+) {
+    val weekDayPattern = "EEEE"
+    val dayPattern = "MMM dd, yyyy"
+    val timePattern = "HH:mm"
+
+    Column (
+        modifier = modifier
+    ) {
+        TextField(
+            value = entry.name,
+            onValueChange = {
+                entry.name = it
+            },
+            textStyle = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            modifier = Modifier
+                .padding(dimensionResource(R.dimen.padding_very_small)),
+            interactionSource = interactionSource
+        )
+        Row (
+            //horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_very_small)),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
+        ) {
+            val defColor = MaterialTheme.colorScheme.primary
+            Column (
+                modifier = Modifier.padding(
+                    horizontal = dimensionResource(R.dimen.padding_very_small)
+                )
+            ) {
+                Text(
+                    text = formatDateFromMillis(
+                        entry = entry,
+                        pattern = weekDayPattern
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = defColor
+                )
+                Text(
+                    text = formatDateFromMillis(
+                        entry = entry,
+                        pattern = dayPattern
+                    ),
+                    modifier = Modifier.padding(
+                        vertical = dimensionResource(R.dimen.padding_very_small)
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = defColor
+                )
+                Text(
+                    text = formatDateFromMillis(
+                        entry = entry,
+                        pattern = timePattern
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = defColor
+                )
+            }
+            Canvas(
+                modifier = Modifier
+                    .size(1.dp)
+                    .weight(1f)
+            ) {
+                drawLine(
+                    color = defColor,
+                    start = Offset.Zero,
+                    end = Offset(size.width, size.height),
+                    strokeWidth = 7f
+                )
+            }
+            IconButton(
+                onClick = {},
+                enabled = true,
+                colors = IconButtonDefaults.iconButtonColors(
+                    contentColor = defColor
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.EditCalendar,
+                    contentDescription = stringResource(R.string.edit_calendar),
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+        }
+        TextField(
+            value = entry.content,
+            onValueChange = {
+                entry.content = it
+            },
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            textStyle = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier
+                .padding(
+                    start = dimensionResource(R.dimen.padding_very_small),
+                    end = dimensionResource(R.dimen.padding_very_small)
+                )
+                .fillMaxSize()
+                .weight(1f)
+        )
+    }
+}
+
+@Composable
+fun EntryEditTopBar(
+    onBackPress: () -> Unit,
+    windowSize: ForNotesWindowSize,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            //.padding(dimensionResource(R.dimen.padding_small))
+            .windowInsetsPadding(WindowInsets.statusBars),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        IconButton(
+            onClick = onBackPress,
+            modifier = Modifier
+                .padding(
+                    horizontal = dimensionResource((R.dimen.padding_small))
+                ),
+            enabled = true,
+            colors = IconButtonDefaults.iconButtonColors(
+                contentColor = MaterialTheme.colorScheme.onSurface
+            )
+        ) {
+            Icon (
+                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                contentDescription = stringResource(R.string.navigate_back),
+                modifier = Modifier.size(28.dp)
+            )
+        }
+        Row {
+            SaveButton(
+                onClick = {}
+            )
+            EditDropDownMenu(menuOptions = defaultTopBarActions)
+        }
+    }
+}
+
 @Composable
 fun EntryScreen(
     journalWithEntries: JournalWithEntries,
@@ -268,7 +464,6 @@ fun EntryScreenTopBar(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EntryScreenContent(
     journalWithEntries: JournalWithEntries,
@@ -318,7 +513,6 @@ fun EntryScreenContent(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EntryCard(
     entry: Entry,
@@ -374,7 +568,6 @@ fun EntryCard(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 private fun formatDateFromMillis(
     entry: Entry,
     pattern: String,
@@ -386,7 +579,21 @@ private fun formatDateFromMillis(
     return dateTime.format(formatter)
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+@Preview (
+    showBackground = true,
+)
+@Composable
+fun EntryEditTopBarPreview(
+) {
+    ForNotesTheme {
+        EntryEditTopBar(
+            onBackPress = {},
+            windowSize = ForNotesWindowSize.Compact
+        )
+    }
+}
+
+
 @Preview
 @Composable
 fun EntryCardPreview() {
@@ -400,7 +607,6 @@ fun EntryCardPreview() {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview (
     showSystemUi = true, device = "id:pixel_9_pro"
 )
@@ -429,7 +635,6 @@ fun EntryScreenTopBarPreview() {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview (
     showSystemUi = true, device = "id:pixel_9_pro"
 )
@@ -441,6 +646,34 @@ fun EntryScreenPreview() {
             windowSize = ForNotesWindowSize.Compact,
             onBackPress = {},
             modifier = Modifier.padding(8.dp)
+        )
+    }
+}
+
+@Preview (
+    showBackground = true
+)
+@Composable
+fun EntryEditTextAreaPreview() {
+    ForNotesTheme {
+        EntryEditTextArea(
+            entry = sampleEntry,
+            interactionSource = rememberSaveable { MutableInteractionSource() },
+            modifier = Modifier.padding(8.dp),
+        )
+    }
+}
+
+@Preview (
+    showSystemUi = true, device = "id:pixel_9_pro"
+)
+@Composable
+fun EntryEditScreenPreview() {
+    ForNotesTheme {
+        EntryEditScreen(
+            entry = sampleEntry,
+            onBackPress = {},
+            windowSize = ForNotesWindowSize.Compact
         )
     }
 }

@@ -1,13 +1,18 @@
 package com.promisesdk.fornotes.ui
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
@@ -73,6 +78,7 @@ import com.promisesdk.fornotes.ui.theme.ForNotesTheme
 import com.promisesdk.fornotes.ui.utils.EditScreenActions
 import com.promisesdk.fornotes.ui.utils.Screen
 import com.promisesdk.fornotes.ui.utils.SearchResults
+import com.promisesdk.fornotes.ui.utils.bottomBarActions
 import kotlinx.coroutines.launch
 
 /**
@@ -693,9 +699,11 @@ fun Label(
 
 
 @Composable
-fun SaveButton() {
+fun SaveButton(
+    onClick: () -> Unit,
+) {
     TextButton(
-        onClick = { },
+        onClick = onClick,
         modifier = Modifier
             .padding(dimensionResource(R.dimen.padding_small)),
         enabled = true,
@@ -781,6 +789,60 @@ fun EditDropDownMenu(
     }
 }
 
+
+@Composable
+fun EditBottomBar(
+    inEditMode: Boolean = false,
+
+) {
+    val bottomBarActions = bottomBarActions
+
+    AnimatedVisibility(
+        visible = inEditMode,
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
+            .windowInsetsPadding(WindowInsets.navigationBars)
+            .windowInsetsPadding(WindowInsets.ime)
+            .padding(dimensionResource(R.dimen.padding_medium))
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            Row(
+                modifier = Modifier
+                    .padding(dimensionResource(R.dimen.padding_small))
+                    .background(
+                        color = MaterialTheme.colorScheme.secondary,
+                        shape = MaterialTheme.shapes.large
+                    )
+                    .fillMaxWidth()
+                ,
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                bottomBarActions.forEach { action ->
+                    IconButton(
+                        onClick = action.onActionClick,
+                        colors = IconButtonDefaults.iconButtonColors(
+                            contentColor = MaterialTheme.colorScheme.onSecondary
+                        ),
+                        modifier = Modifier
+                            .padding(dimensionResource((R.dimen.padding_very_small))),
+                    ) {
+                        Icon(
+                            imageVector = action.icon,
+                            contentDescription = stringResource(action.actionName),
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
 
 @Preview (
     showSystemUi = true, showBackground = true, device = "spec:width=673dp,height=841dp",

@@ -147,8 +147,8 @@ data class Entry (
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val journalId: Int,
-    val name: String,
-    val content: String,
+    var name: String,
+    var content: String,
     val creationTimeInMillis: Long
 )
 
