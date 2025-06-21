@@ -44,7 +44,7 @@ import com.promisesdk.fornotes.ui.utils.defaultTopBarActions
 
 @Composable
 fun NoteEditScreen(
-    notesData: Note,
+    note: Note,
     onBackPress: () -> Unit,
     forNotesWindowSize: ForNotesWindowSize
 ) {
@@ -69,7 +69,7 @@ fun NoteEditScreen(
         }
     ) { contentPadding ->
         NotesEditTextArea(
-            notesData = notesData,
+            note = note,
             interactionSource = interactionSource,
             modifier = Modifier
                 .padding(contentPadding)
@@ -145,7 +145,7 @@ fun NotesEditTopAppBar(
 
 @Composable
 fun NotesEditTextArea (
-    notesData: Note,
+    note: Note,
     interactionSource: MutableInteractionSource,
     modifier: Modifier = Modifier
 ) {
@@ -160,9 +160,9 @@ fun NotesEditTextArea (
             verticalAlignment = Alignment.CenterVertically
         ) {
             TextField(
-                value = notesData.title,
+                value = note.title,
                 onValueChange = {
-                    notesData.title = it
+                    note.title = it
                 },
                 textStyle = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
                 colors = TextFieldDefaults.colors(
@@ -176,16 +176,16 @@ fun NotesEditTextArea (
                     .padding(dimensionResource(R.dimen.padding_very_small)),
                 interactionSource = interactionSource
             )
-            if (notesData.label != null) {
+            if (note.label != null) {
                 Label(
-                    label = notesData.label
+                    label = note.label
                 )
             }
         }
         TextField(
-            value = notesData.content,
+            value = note.content,
             onValueChange = {
-                notesData.content = it
+                note.content = it
             },
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
@@ -228,7 +228,7 @@ fun NotesEditTopBarPreview() {
 fun NotesEditTextAreaPreview() {
     ForNotesTheme {
         NotesEditTextArea(
-            notesData = sampleNote,
+            note = sampleNote,
             interactionSource = rememberSaveable { MutableInteractionSource() }
         )
     }
@@ -243,7 +243,7 @@ fun NotesEditScreenPreview(){
         darkTheme = true
     ) {
         NoteEditScreen(
-            notesData = sampleNote,
+            note = sampleNote,
             onBackPress = { },
             forNotesWindowSize = ForNotesWindowSize.Compact
         )

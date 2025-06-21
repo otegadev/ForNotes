@@ -27,7 +27,7 @@ interface ForNotesRepository {
 
     fun getAllTodos(): Flow<List<TodoWithItems>>
 
-    fun getTodoByTodoTitle(queryString: String): Flow<List<TodoWithItems>>
+    fun getTodoByTitle(queryString: String): Flow<List<TodoWithItems>>
 
     fun getTodoByLabel(queryString: String): Flow<List<TodoWithItems>>
 
@@ -51,15 +51,15 @@ interface ForNotesRepository {
 
     suspend fun deleteJournal(journal: Journal)
 
-    fun getAllJournals(): Flow<List<Journal>>
+    fun getAllJournals(): Flow<List<JournalWithEntries>>
 
-    fun getJournalByJournalNameOrContent(queryString: String): Flow<List<Journal>>
+    fun getJournalByJournalNameOrContent(queryString: String): Flow<List<JournalWithEntries>>
 
-    fun getJournalByJournalType(queryString: String): Flow<List<Journal>>
+    fun getJournalByJournalType(queryString: String): Flow<List<JournalWithEntries>>
 
-    fun getJournalByCreationTime(queryString: Long): Flow<List<Journal>>
+    fun getJournalByCreationTime(queryString: Long): Flow<List<JournalWithEntries>>
 
-    fun getJournalById(id: Int): Flow<Journal>
+    fun getJournalById(id: Int): Flow<JournalWithEntries>
 
     suspend fun insertEntry(entry: Entry)
 
@@ -127,8 +127,8 @@ class OfflineForNotesRepository(private val forNotesDao: ForNotesDao): ForNotesR
         return forNotesDao.getAllTodos()
     }
 
-    override fun getTodoByTodoTitle(queryString: String): Flow<List<TodoWithItems>> {
-        return forNotesDao.getTodoByTodoTitle(queryString)
+    override fun getTodoByTitle(queryString: String): Flow<List<TodoWithItems>> {
+        return forNotesDao.getTodoByTitle(queryString)
     }
 
     override fun getTodoByLabel(queryString: String): Flow<List<TodoWithItems>> {
@@ -175,23 +175,23 @@ class OfflineForNotesRepository(private val forNotesDao: ForNotesDao): ForNotesR
         forNotesDao.deleteJournal(journal)
     }
 
-    override fun getAllJournals(): Flow<List<Journal>> {
+    override fun getAllJournals(): Flow<List<JournalWithEntries>> {
         return forNotesDao.getAllJournals()
     }
 
-    override fun getJournalByJournalNameOrContent(queryString: String): Flow<List<Journal>> {
+    override fun getJournalByJournalNameOrContent(queryString: String): Flow<List<JournalWithEntries>> {
         return forNotesDao.getJournalByJournalName(queryString)
     }
 
-    override fun getJournalByJournalType(queryString: String): Flow<List<Journal>> {
+    override fun getJournalByJournalType(queryString: String): Flow<List<JournalWithEntries>> {
         return forNotesDao.getJournalByJournalType(queryString)
     }
 
-    override fun getJournalByCreationTime(queryString: Long): Flow<List<Journal>> {
+    override fun getJournalByCreationTime(queryString: Long): Flow<List<JournalWithEntries>> {
         return forNotesDao.getJournalByCreationTime(queryString)
     }
 
-    override fun getJournalById(id: Int): Flow<Journal> {
+    override fun getJournalById(id: Int): Flow<JournalWithEntries> {
         return forNotesDao.getJournalById(id)
     }
 

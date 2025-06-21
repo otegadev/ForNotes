@@ -169,19 +169,19 @@ fun CompactTopAppBar(
            when (searchResults) {
                is SearchResults.JournalsSearchResults ->
                    JournalsList(
-                       journalList = searchResults.journals,
+                       journals = emptyList(),
                        onJournalClick = { onResultClick() },
                        modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
                    )
                is SearchResults.NotesSearchResults ->
                    NotesList(
-                       notesList = searchResults.notes,
+                       notes = searchResults.notes,
                        onNoteClick = onResultClick,
                        modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
                    )
                is SearchResults.TodosSearchResults ->
                    TodosList(
-                       todosList = searchResults.todos,
+                       todos = searchResults.todos,
                        onTodoClick = onResultClick,
                        modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
                    )
@@ -257,19 +257,19 @@ fun MediumTopAppBar(
             when (searchResults) {
                 is SearchResults.JournalsSearchResults ->
                     JournalsList(
-                        journalList = searchResults.journals,
+                        journals = emptyList(),
                         onJournalClick = { onResultClick() },
                         modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
                     )
                 is SearchResults.NotesSearchResults ->
                     NotesList(
-                        notesList = searchResults.notes,
+                        notes = searchResults.notes,
                         onNoteClick = onResultClick,
                         modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
                     )
                 is SearchResults.TodosSearchResults ->
                     TodosList(
-                        todosList = searchResults.todos,
+                        todos = searchResults.todos,
                         onTodoClick = onResultClick,
                         modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
                     )
@@ -390,19 +390,19 @@ fun ExpandedTopAppBar(
             when (searchResults) {
                 is SearchResults.JournalsSearchResults ->
                     JournalsList(
-                        journalList = searchResults.journals,
+                        journals = emptyList(),
                         onJournalClick = { onResultClick() },
                         modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
                     )
                 is SearchResults.NotesSearchResults ->
                     NotesList(
-                        notesList = searchResults.notes,
+                        notes = searchResults.notes,
                         onNoteClick = onResultClick,
                         modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
                     )
                 is SearchResults.TodosSearchResults ->
                     TodosList(
-                        todosList = searchResults.todos,
+                        todos = searchResults.todos,
                         onTodoClick = onResultClick,
                         modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
                     )

@@ -35,18 +35,19 @@ import com.promisesdk.fornotes.ui.utils.Screen
 
 @Composable
 fun TodosHome(
-    todosList: List<TodoWithItems>,
+    todos: List<TodoWithItems>,
     windowSize: ForNotesWindowSize,
     onNavItemClick: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
     when (windowSize) {
         ForNotesWindowSize.Compact ->
             CompactHomeScreenLayout(
                 screen = Screen.TodoScreen,
                 itemList = {
                     TodosList(
-                        todosList = todosList,
+                        todos = todos,
                         onTodoClick = {},
                         modifier = modifier
                     )
@@ -60,7 +61,7 @@ fun TodosHome(
                 screen = Screen.TodoScreen,
                 itemGrid = {
                     TodosGrid(
-                        todosList = todosList,
+                        todos = todos,
                         onTodoClick = {},
                         windowSize = windowSize,
                         modifier = modifier
@@ -75,7 +76,7 @@ fun TodosHome(
                 screen = Screen.TodoScreen,
                 itemGrid = {
                     TodosGrid(
-                        todosList = todosList,
+                        todos = todos,
                         onTodoClick = {},
                         windowSize = windowSize,
                         modifier = Modifier
@@ -93,7 +94,7 @@ fun TodosHome(
  */
 @Composable
 fun TodosGrid(
-    todosList: List<TodoWithItems>,
+    todos: List<TodoWithItems>,
     onTodoClick: () -> Unit,
     windowSize: ForNotesWindowSize,
     modifier: Modifier = Modifier
@@ -110,7 +111,7 @@ fun TodosGrid(
         modifier = modifier
     ) {
         items (
-            items = todosList,
+            items = todos,
             key = {todo -> todo.todo.id}
         ) { todo ->
             TodoCard(
@@ -134,7 +135,7 @@ fun TodosGrid(
  */
 @Composable
 fun TodosList(
-    todosList: List<TodoWithItems>,
+    todos: List<TodoWithItems>,
     onTodoClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -142,7 +143,7 @@ fun TodosList(
         modifier = modifier
     ) {
         items(
-            items = todosList,
+            items = todos,
             key = {todo -> todo.todo.id}
         ) { todo ->
             TodoCard(
@@ -241,7 +242,7 @@ fun TodoCardPreview() {
 fun TodoHomePreview() {
     ForNotesTheme ( darkTheme = false ) {
         TodosHome(
-            todosList = emptyList(),
+            todos = emptyList(),
             windowSize = ForNotesWindowSize.Compact,
             onNavItemClick = {},
             modifier = Modifier

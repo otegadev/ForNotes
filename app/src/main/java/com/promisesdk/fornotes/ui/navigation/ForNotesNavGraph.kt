@@ -2,15 +2,21 @@ package com.promisesdk.fornotes.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.promisesdk.fornotes.ui.AppViewModelProvider
 import com.promisesdk.fornotes.ui.screens.jounals.JournalsHome
+import com.promisesdk.fornotes.ui.screens.jounals.JournalsViewModel
 import com.promisesdk.fornotes.ui.screens.notes.NotesHome
+import com.promisesdk.fornotes.ui.screens.notes.NotesViewModel
 import com.promisesdk.fornotes.ui.screens.todos.TodosHome
+import com.promisesdk.fornotes.ui.screens.todos.TodosViewModel
 import com.promisesdk.fornotes.ui.utils.ForNotesWindowSize
 import com.promisesdk.fornotes.ui.utils.Screen
 import kotlinx.serialization.Serializable
@@ -39,13 +45,23 @@ fun ForNotesNavigationHost(
 ) {
     val navController: NavHostController = rememberNavController()
     var currentScreen: MutableState<Screen> = remember { mutableStateOf(Screen.NotesScreen) }
+
+    val journalsViewModel: JournalsViewModel = viewModel(factory = AppViewModelProvider().factory)
+    val journalHomeUiState = journalsViewModel.journalHomeUiState.collectAsState()
+
+    val notesViewModel: NotesViewModel = viewModel(factory = AppViewModelProvider().factory)
+    val notesHomeUiState = notesViewModel.notesHomeUiState.collectAsState()
+
+    val todosViewModel: TodosViewModel = viewModel(factory = AppViewModelProvider().factory)
+    val todosHomeUiState = todosViewModel.todoHomeUiState.collectAsState()
+
     NavHost(
         navController = navController,
         startDestination = Notes
     ) {
         composable<Notes> {
             NotesHome(
-                notesList = emptyList(),
+                notes = notesHomeUiState.value.notes,
                 windowSize = windowSize,
                 onNavItemClick = {
                     currentScreen.value = Screen.NotesScreen
@@ -58,7 +74,7 @@ fun ForNotesNavigationHost(
         }
         composable<Todos> {
             TodosHome(
-                todosList = emptyList(),
+                todos = todosHomeUiState.value.todos,
                 windowSize = windowSize,
                 onNavItemClick = {
                     currentScreen.value = Screen.TodoScreen
@@ -72,7 +88,7 @@ fun ForNotesNavigationHost(
         }
         composable<Journals> {
             JournalsHome(
-                journalsList = emptyList(),
+                journals = journalHomeUiState.value.journals,
                 windowSize = windowSize,
                 onNavItemClick = {
                     currentScreen.value = Screen.JournalScreen

@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import com.promisesdk.fornotes.R
 import com.promisesdk.fornotes.data.Journal
 import com.promisesdk.fornotes.data.JournalType
+import com.promisesdk.fornotes.data.JournalWithEntries
 import com.promisesdk.fornotes.data.sampleJournalEntry
 import com.promisesdk.fornotes.ui.CompactHomeScreenLayout
 import com.promisesdk.fornotes.ui.ExpandedHomeScreenLayout
@@ -62,7 +63,7 @@ import com.promisesdk.fornotes.ui.utils.Screen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JournalsHome(
-    journalsList: List<Journal>,
+    journals: List<JournalWithEntries>,
     windowSize: ForNotesWindowSize,
     onNavItemClick: (Screen) -> Unit,
     modifier: Modifier = Modifier
@@ -85,7 +86,7 @@ fun JournalsHome(
                 screen = Screen.JournalScreen,
                 itemList = {
                     JournalsList(
-                        journalList = journalsList,
+                        journals = journals,
                         onJournalClick = {},
                         modifier = modifier
                     )
@@ -100,7 +101,7 @@ fun JournalsHome(
                 screen = Screen.JournalScreen,
                 itemGrid = {
                     JournalsGrid(
-                        journalList = journalsList,
+                        journals = journals,
                         onJournalClick = {},
                         windowSize = windowSize,
                         modifier = Modifier
@@ -115,7 +116,7 @@ fun JournalsHome(
                 screen = Screen.JournalScreen,
                 itemGrid = {
                     JournalsGrid(
-                        journalList = journalsList,
+                        journals = journals,
                         onJournalClick = {},
                         windowSize = windowSize,
                         modifier = Modifier
@@ -256,7 +257,7 @@ fun JournalsHome(
                             DropdownMenuItem(
                                 text = {
                                     Text(
-                                        text = type.name,
+                                        text = type.journalTypeName,
                                         style = MaterialTheme.typography.bodyMedium
                                     )
                                 },
@@ -300,7 +301,7 @@ fun JournalsHome(
  */
 @Composable
 fun JournalsGrid(
-    journalList: List<Journal>,
+    journals: List<JournalWithEntries>,
     onJournalClick: () -> Unit,
     windowSize: ForNotesWindowSize,
     modifier: Modifier = Modifier
@@ -317,18 +318,18 @@ fun JournalsGrid(
         modifier = modifier
     ) {
         items (
-            items = journalList,
-            key = {journal -> journal.id}
-        ) { journal ->
+            items = journals,
+            key = {journalWithEntries -> journalWithEntries.journal.id}
+        ) { journalWithEntries ->
             JournalCard(
-                journal = journal,
+                journal = journalWithEntries.journal,
                 modifier = Modifier
                     .padding(8.dp)
                     .clickable(
                         onClick = onJournalClick,
                         onClickLabel = stringResource(
                             R.string.navigate_to_this_journal,
-                            journal.name
+                            journalWithEntries.journal.name
                         )
                     )
             )
@@ -342,7 +343,7 @@ fun JournalsGrid(
  */
 @Composable
 fun JournalsList(
-    journalList: List<Journal>,
+    journals: List<JournalWithEntries>,
     onJournalClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -350,18 +351,18 @@ fun JournalsList(
         modifier = modifier
     ) {
         items(
-            items = journalList,
-            key = {journal -> journal.id}
-        ) { journal ->
+            items = journals,
+            key = {journalWithEntries -> journalWithEntries.journal.id}
+        ) { journalWithEntries ->
            JournalCard(
-               journal = journal,
+               journal = journalWithEntries.journal,
                modifier = Modifier
                    .padding(8.dp)
                    .clickable(
                        onClick = onJournalClick,
                        onClickLabel = stringResource(
                            R.string.navigate_to_this_journal,
-                           journal.name
+                           journalWithEntries.journal.name
                        )
                    )
            )
@@ -437,7 +438,7 @@ fun JournalsHomePreview() {
         darkTheme = true
     ) {
         JournalsHome(
-            journalsList = emptyList(),
+            journals = emptyList(),
             windowSize = ForNotesWindowSize.Compact,
             onNavItemClick = {},
             modifier = Modifier

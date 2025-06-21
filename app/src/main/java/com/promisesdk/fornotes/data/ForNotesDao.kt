@@ -54,7 +54,7 @@ interface ForNotesDao {
 
     @Transaction
     @Query("SELECT * FROM todos WHERE title LIKE '%' || :queryString || '%' ORDER BY id DESC")
-    fun getTodoByTodoTitle(queryString: String): Flow<List<TodoWithItems>>
+    fun getTodoByTitle(queryString: String): Flow<List<TodoWithItems>>
 
     @Transaction
     @Query("SELECT * FROM todos WHERE label = :queryString ORDER BY id DESC")
@@ -81,6 +81,7 @@ interface ForNotesDao {
     @Delete
     suspend fun deleteTodoItem(todoItem: TodoItem)
 
+    @Transaction
     @Query("SELECT * FROM todoItems WHERE todoId = :todoId ORDER BY id ASC")
     fun getAllTodoItems(todoId: Int): Flow<List<TodoItem>>
 
@@ -93,22 +94,27 @@ interface ForNotesDao {
     @Delete
     suspend fun deleteJournal(journal: Journal)
 
+    @Transaction
     @Query("SELECT * FROM journals ORDER BY id DESC")
-    fun getAllJournals(): Flow<List<Journal>>
+    fun getAllJournals(): Flow<List<JournalWithEntries>>
 
+    @Transaction
     @Query(
         "SELECT * FROM journals WHERE name LIKE '%' || :queryString || '%' ORDER BY id DESC"
     )
-    fun getJournalByJournalName(queryString: String): Flow<List<Journal>>
+    fun getJournalByJournalName(queryString: String): Flow<List<JournalWithEntries>>
 
+    @Transaction
     @Query("SELECT * FROM journals WHERE type = :queryString ORDER BY id DESC")
-    fun getJournalByJournalType(queryString: String): Flow<List<Journal>>
+    fun getJournalByJournalType(queryString: String): Flow<List<JournalWithEntries>>
 
+    @Transaction
     @Query("SELECT * FROM journals WHERE creationTimeInMillis = :queryString ORDER BY id DESC")
-    fun getJournalByCreationTime(queryString: Long): Flow<List<Journal>>
+    fun getJournalByCreationTime(queryString: Long): Flow<List<JournalWithEntries>>
 
+    @Transaction
     @Query("SELECT * FROM journals WHERE id = :id")
-    fun getJournalById(id: Int): Flow<Journal>
+    fun getJournalById(id: Int): Flow<JournalWithEntries>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEntry(entry: Entry)

@@ -36,18 +36,20 @@ import com.promisesdk.fornotes.ui.utils.Screen
 
 @Composable
 fun NotesHome(
-    notesList: List<Note>,
+    notes: List<Note>,
     windowSize: ForNotesWindowSize,
     onNavItemClick: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+
     when (windowSize) {
         ForNotesWindowSize.Compact ->
             CompactHomeScreenLayout(
                 screen = Screen.NotesScreen,
                 itemList = {
                     NotesList(
-                        notesList = notesList,
+                        notes = notes,
                         onNoteClick = {},
                         modifier = Modifier
                     )
@@ -61,7 +63,7 @@ fun NotesHome(
                 screen = Screen.NotesScreen,
                 itemGrid = {
                     NotesGrid(
-                        notesList = notesList,
+                        notes = notes,
                         onNoteClick = {},
                         windowSize = windowSize,
                         modifier = Modifier
@@ -77,7 +79,7 @@ fun NotesHome(
                 screen = Screen.NotesScreen,
                 itemGrid = {
                     NotesGrid(
-                        notesList = notesList,
+                        notes = notes,
                         onNoteClick = {},
                         windowSize = windowSize,
                         modifier = Modifier
@@ -96,7 +98,7 @@ fun NotesHome(
  */
 @Composable
 fun NotesGrid(
-    notesList: List<Note>,
+    notes: List<Note>,
     onNoteClick: () -> Unit,
     windowSize: ForNotesWindowSize,
     modifier: Modifier = Modifier
@@ -113,7 +115,7 @@ fun NotesGrid(
         modifier = modifier
     ) {
         items (
-            items = notesList,
+            items = notes,
             key = {note -> note.id}
         ) { note ->
             NotesCard(
@@ -137,7 +139,7 @@ fun NotesGrid(
  */
 @Composable
 fun NotesList(
-    notesList: List<Note>,
+    notes: List<Note>,
     onNoteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -145,7 +147,7 @@ fun NotesList(
         modifier = modifier
     ) {
         items(
-            items = notesList,
+            items = notes,
             key = {note -> note.id}
         ) { note ->
             NotesCard(
@@ -209,7 +211,7 @@ fun NotesCard(
 private fun NotesGridPreview() {
     ForNotesTheme {
         NotesGrid(
-            notesList = sampleNotes,
+            notes = sampleNotes,
             onNoteClick = {},
             windowSize = ForNotesWindowSize.Expanded, // You can change this to test different sizes
             modifier = Modifier
@@ -243,7 +245,7 @@ private fun NotesHomePreview() {
         darkTheme = true
     ) {
         NotesHome(
-            notesList = emptyList(),
+            notes = emptyList(),
             onNavItemClick = {},
             windowSize = ForNotesWindowSize.Medium,
         )
