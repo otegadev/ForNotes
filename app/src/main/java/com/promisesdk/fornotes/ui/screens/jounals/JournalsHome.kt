@@ -329,7 +329,7 @@ fun JournalsGrid(
                         onClick = onJournalClick,
                         onClickLabel = stringResource(
                             R.string.navigate_to_this_journal,
-                            journalWithEntries.journal.name
+                            journalWithEntries.journal.title
                         )
                     )
             )
@@ -362,7 +362,7 @@ fun JournalsList(
                        onClick = onJournalClick,
                        onClickLabel = stringResource(
                            R.string.navigate_to_this_journal,
-                           journalWithEntries.journal.name
+                           journalWithEntries.journal.title
                        )
                    )
            )
@@ -379,7 +379,7 @@ fun JournalCard(
         Column (modifier = Modifier.padding(dimensionResource(R.dimen.padding_large))) {
             Row {
                 Text(
-                    text = journal.name,
+                    text = journal.title,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)

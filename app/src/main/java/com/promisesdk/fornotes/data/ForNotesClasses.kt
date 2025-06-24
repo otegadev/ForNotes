@@ -124,9 +124,9 @@ data class TodoWithItems (
 data class Journal (
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val name: String,
+    val title: String,
     val description: String,
-    val entries: Int,
+    val noOfEntries: Int,
     @Serializable val type: JournalType,
     val creationTimeInMillis: Long,
 )

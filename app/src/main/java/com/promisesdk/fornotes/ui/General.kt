@@ -176,7 +176,7 @@ fun CompactTopAppBar(
                is SearchResults.NotesSearchResults ->
                    NotesList(
                        notes = searchResults.notes,
-                       onNoteClick = onResultClick,
+                       onNoteClick = {onResultClick},
                        modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
                    )
                is SearchResults.TodosSearchResults ->
@@ -264,7 +264,7 @@ fun MediumTopAppBar(
                 is SearchResults.NotesSearchResults ->
                     NotesList(
                         notes = searchResults.notes,
-                        onNoteClick = onResultClick,
+                        onNoteClick = {onResultClick},
                         modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
                     )
                 is SearchResults.TodosSearchResults ->
@@ -397,7 +397,7 @@ fun ExpandedTopAppBar(
                 is SearchResults.NotesSearchResults ->
                     NotesList(
                         notes = searchResults.notes,
-                        onNoteClick = onResultClick,
+                        onNoteClick = {onResultClick},
                         modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
                     )
                 is SearchResults.TodosSearchResults ->

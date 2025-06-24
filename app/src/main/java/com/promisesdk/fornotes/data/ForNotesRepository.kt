@@ -17,7 +17,7 @@ interface ForNotesRepository {
 
     fun getNoteByCreationTime(queryString: Long): Flow<List<Note>>
 
-    fun getNoteById(queryString: String): Flow<Note>
+    fun getNoteById(id: Int): Flow<Note>?
 
     suspend fun insertTodo(todo: Todo)
 
@@ -35,7 +35,7 @@ interface ForNotesRepository {
 
     fun getTodoByCreationTime(queryString: Long): Flow<List<TodoWithItems>>
 
-    fun getTodoById(queryString: String): Flow<TodoWithItems>
+    fun getTodoById(id: Int): Flow<TodoWithItems>?
 
     suspend fun insertTodoItem(todoItem: TodoItem)
 
@@ -107,8 +107,8 @@ class OfflineForNotesRepository(private val forNotesDao: ForNotesDao): ForNotesR
         return forNotesDao.getNoteByCreationTime(queryString)
     }
 
-    override fun getNoteById(queryString: String): Flow<Note> {
-        return forNotesDao.getNoteById(queryString)
+    override fun getNoteById(id: Int): Flow<Note>? {
+        return forNotesDao.getNoteById(id)
     }
 
     override suspend fun insertTodo(todo: Todo) {
@@ -143,8 +143,8 @@ class OfflineForNotesRepository(private val forNotesDao: ForNotesDao): ForNotesR
         return forNotesDao.getTodoByCreationTime(queryString)
     }
 
-    override fun getTodoById(queryString: String): Flow<TodoWithItems> {
-        return forNotesDao.getTodoById(queryString)
+    override fun getTodoById(id: Int): Flow<TodoWithItems>? {
+        return forNotesDao.getTodoById(id)
     }
 
     override suspend fun insertTodoItem(todoItem: TodoItem) {

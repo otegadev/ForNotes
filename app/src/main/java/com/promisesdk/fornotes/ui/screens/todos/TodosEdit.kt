@@ -227,7 +227,7 @@ fun TodoEditContent(
 
 @Composable
 fun TodoItem(
-    todoItem: TodoItem,
+    todoItem: TodoItem?,
     onCheckedChange: (Boolean) -> Unit,
     onValueChange: (String) -> Unit,
     onDelete: () -> Unit,
@@ -242,7 +242,7 @@ fun TodoItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Checkbox(
-            checked = todoItem.isChecked,
+            checked = todoItem?.isChecked == true,
             onCheckedChange = onCheckedChange,
             colors = CheckboxColors(
                 checkedCheckmarkColor = MaterialTheme.colorScheme.onPrimary,
@@ -260,7 +260,7 @@ fun TodoItem(
             ),
         )
         BasicTextField(
-            value = todoItem.primaryText,
+            value = todoItem?.primaryText ?: "",
             onValueChange = onValueChange,
             textStyle =
                 MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),

@@ -35,8 +35,8 @@ interface ForNotesDao {
     @Query("SELECT * FROM notes WHERE creationTimeInMillis = :queryString ORDER BY id DESC")
     fun getNoteByCreationTime(queryString: Long): Flow<List<Note>>
 
-    @Query("SELECT * FROM notes WHERE id = :queryString")
-    fun getNoteById(queryString: String): Flow<Note>
+    @Query("SELECT * FROM notes WHERE id = :id")
+    fun getNoteById(id: Int): Flow<Note>?
 
 
     @Insert (onConflict = OnConflictStrategy.REPLACE)
@@ -69,8 +69,8 @@ interface ForNotesDao {
     fun getTodoByCreationTime(queryString: Long): Flow<List<TodoWithItems>>
 
     @Transaction
-    @Query("SELECT * FROM todos WHERE id = :queryString")
-    fun getTodoById(queryString: String): Flow<TodoWithItems>
+    @Query("SELECT * FROM todos WHERE id = :id")
+    fun getTodoById(id: Int): Flow<TodoWithItems>?
 
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTodoItem(todoItem: TodoItem)
@@ -100,7 +100,7 @@ interface ForNotesDao {
 
     @Transaction
     @Query(
-        "SELECT * FROM journals WHERE name LIKE '%' || :queryString || '%' ORDER BY id DESC"
+        "SELECT * FROM journals WHERE title LIKE '%' || :queryString || '%' ORDER BY id DESC"
     )
     fun getJournalByJournalName(queryString: String): Flow<List<JournalWithEntries>>
 

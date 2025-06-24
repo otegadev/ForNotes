@@ -3,10 +3,10 @@ package com.promisesdk.fornotes.data
 // --- Sample JournalsData Instance Creation ---
 val sampleJournalEntry = Journal(
     id = 1, // If you have an ID field
-    name = "My Daily Reflections",
+    title = "My Daily Reflections",
     description = "A collection of thoughts, events, and feelings from each day. This space is for personal growth and understanding patterns in my life. I plan to write here every evening before bed.",
     type = JournalType.Diary,
-    entries = 100,
+    noOfEntries = 100,
     creationTimeInMillis = System.currentTimeMillis() // If you have a date field
 )
 

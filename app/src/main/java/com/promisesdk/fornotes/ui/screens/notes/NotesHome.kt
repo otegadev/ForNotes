@@ -39,10 +39,10 @@ fun NotesHome(
     notes: List<Note>,
     windowSize: ForNotesWindowSize,
     onNavItemClick: (Screen) -> Unit,
+    onNoteClick: (Int) -> Unit,
+    onFabClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-
     when (windowSize) {
         ForNotesWindowSize.Compact ->
             CompactHomeScreenLayout(
@@ -50,12 +50,12 @@ fun NotesHome(
                 itemList = {
                     NotesList(
                         notes = notes,
-                        onNoteClick = {},
+                        onNoteClick = onNoteClick,
                         modifier = Modifier
                     )
                 },
                 onNavItemClick = onNavItemClick,
-                onFabClick = {},
+                onFabClick = onFabClick,
                 modifier = modifier,
             )
         ForNotesWindowSize.Medium ->
@@ -64,14 +64,14 @@ fun NotesHome(
                 itemGrid = {
                     NotesGrid(
                         notes = notes,
-                        onNoteClick = {},
+                        onNoteClick = onNoteClick,
                         windowSize = windowSize,
                         modifier = Modifier
                             .padding(dimensionResource(R.dimen.padding_medium))
                     )
                 },
                 onNavItemClick = onNavItemClick,
-                onFabClick = {},
+                onFabClick = onFabClick,
                 modifier = modifier
             )
         ForNotesWindowSize.Expanded ->
@@ -80,14 +80,14 @@ fun NotesHome(
                 itemGrid = {
                     NotesGrid(
                         notes = notes,
-                        onNoteClick = {},
+                        onNoteClick = onNoteClick,
                         windowSize = windowSize,
                         modifier = Modifier
                             .padding(dimensionResource(R.dimen.padding_medium))
                     )
                 },
                 onNavItemClick = onNavItemClick,
-                onFabClick = {},
+                onFabClick = onFabClick,
                 modifier = modifier
             )
     }
@@ -99,7 +99,7 @@ fun NotesHome(
 @Composable
 fun NotesGrid(
     notes: List<Note>,
-    onNoteClick: () -> Unit,
+    onNoteClick: (Int) -> Unit,
     windowSize: ForNotesWindowSize,
     modifier: Modifier = Modifier
 ) {
@@ -116,14 +116,14 @@ fun NotesGrid(
     ) {
         items (
             items = notes,
-            key = {note -> note.id}
+            key = { note -> note.id }
         ) { note ->
             NotesCard(
                 notesData = note,
                 modifier = Modifier
                     .padding(dimensionResource(R.dimen.padding_very_small))
                     .clickable(
-                        onClick = onNoteClick,
+                        onClick = { onNoteClick.invoke(note.id) },
                         onClickLabel = stringResource(
                             R.string.navigate_to_this_note,
                             note.title
@@ -140,7 +140,7 @@ fun NotesGrid(
 @Composable
 fun NotesList(
     notes: List<Note>,
-    onNoteClick: () -> Unit,
+    onNoteClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -155,7 +155,7 @@ fun NotesList(
                 modifier = Modifier
                     .padding(8.dp)
                     .clickable(
-                        onClick = onNoteClick,
+                        onClick = { onNoteClick.invoke(note.id) },
                         onClickLabel = stringResource(
                             R.string.navigate_to_this_note,
                             note.title
@@ -247,6 +247,8 @@ private fun NotesHomePreview() {
         NotesHome(
             notes = emptyList(),
             onNavItemClick = {},
+            onNoteClick = {},
+            onFabClick = {},
             windowSize = ForNotesWindowSize.Medium,
         )
     }

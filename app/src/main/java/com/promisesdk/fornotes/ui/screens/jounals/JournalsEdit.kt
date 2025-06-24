@@ -271,7 +271,7 @@ fun EntryScreen(
     Scaffold (
         topBar = {
             EntryScreenTopBar(
-                journalName = journalWithEntries.journal.name,
+                journalName = journalWithEntries.journal.title,
                 windowSize = windowSize,
                 onBackPress = onBackPress,
                 modifier = Modifier
@@ -627,7 +627,7 @@ fun EntryScreenContentPreview() {
 fun EntryScreenTopBarPreview() {
     ForNotesTheme {
         EntryScreenTopBar(
-            journalName = sampleJournalEntry.name,
+            journalName = sampleJournalEntry.title,
             windowSize = ForNotesWindowSize.Compact,
             onBackPress = {},
             modifier = Modifier.fillMaxWidth()

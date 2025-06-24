@@ -1,5 +1,6 @@
 package com.promisesdk.fornotes.ui.screens.notes
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -19,9 +20,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,14 +47,17 @@ import com.promisesdk.fornotes.ui.utils.defaultTopBarActions
 
 @Composable
 fun NoteEditScreen(
-    note: Note,
+    note: Note?,
     onBackPress: () -> Unit,
     forNotesWindowSize: ForNotesWindowSize
 ) {
 
-    var interactionSource = rememberSaveable { MutableInteractionSource() }
+    var interactionSource = remember { MutableInteractionSource() }
     var isFocused = interactionSource.collectIsFocusedAsState()
 
+    BackHandler {
+        onBackPress
+    }
     Scaffold (
         topBar = {
             NotesEditTopAppBar(
@@ -145,7 +151,7 @@ fun NotesEditTopAppBar(
 
 @Composable
 fun NotesEditTextArea (
-    note: Note,
+    note: Note?,
     interactionSource: MutableInteractionSource,
     modifier: Modifier = Modifier
 ) {
@@ -160,9 +166,9 @@ fun NotesEditTextArea (
             verticalAlignment = Alignment.CenterVertically
         ) {
             TextField(
-                value = note.title,
+                value = note?.title ?: "",
                 onValueChange = {
-                    note.title = it
+                    note?.title = it
                 },
                 textStyle = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
                 colors = TextFieldDefaults.colors(
@@ -174,18 +180,24 @@ fun NotesEditTextArea (
                 modifier = Modifier
                     .weight(1f)
                     .padding(dimensionResource(R.dimen.padding_very_small)),
+                placeholder = {
+                    Text(
+                        text = "Title goes here",
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                    )
+                },
                 interactionSource = interactionSource
             )
-            if (note.label != null) {
+            if (note?.label != null) {
                 Label(
                     label = note.label
                 )
             }
         }
         TextField(
-            value = note.content,
+            value = note?.content ?: "",
             onValueChange = {
-                note.content = it
+                note?.content = it
             },
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
@@ -200,7 +212,14 @@ fun NotesEditTextArea (
                     end = dimensionResource(R.dimen.padding_very_small)
                 )
                 .fillMaxSize()
-                .weight(1f)
+                .weight(1f),
+            placeholder = {
+                Text(
+                    text = "Start typing....",
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            },
+            interactionSource = interactionSource
         )
     }
 }
