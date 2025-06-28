@@ -17,7 +17,7 @@ interface ForNotesRepository {
 
     fun getNoteByCreationTime(queryString: Long): Flow<List<Note>>
 
-    fun getNoteById(id: Int): Flow<Note>?
+    fun getNoteById(id: Int): Flow<Note>
 
     suspend fun insertTodo(todo: Todo)
 
@@ -107,7 +107,7 @@ class OfflineForNotesRepository(private val forNotesDao: ForNotesDao): ForNotesR
         return forNotesDao.getNoteByCreationTime(queryString)
     }
 
-    override fun getNoteById(id: Int): Flow<Note>? {
+    override fun getNoteById(id: Int): Flow<Note> {
         return forNotesDao.getNoteById(id)
     }
 

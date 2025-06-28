@@ -498,7 +498,7 @@ fun CompactHomeScreenLayout(
                     modifier = Modifier.padding(dimensionResource(R.dimen.padding_large)),
                     fontWeight = FontWeight.Bold
                 )
-                itemList
+                itemList()
             }
 
         }
@@ -568,7 +568,7 @@ fun MediumHomeScreenLayout(
                 modifier = Modifier.padding(dimensionResource(R.dimen.padding_large)),
                 fontWeight = FontWeight.Bold
             )
-            itemGrid
+            itemGrid()
         }
     }
 }
@@ -613,7 +613,7 @@ fun ExpandedHomeScreenLayout(
             },
         ) { contentPadding ->
             Column (modifier = Modifier.padding(contentPadding)) {
-                itemGrid
+                itemGrid()
             }
 
         }

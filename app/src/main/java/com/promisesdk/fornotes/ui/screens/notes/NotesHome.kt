@@ -119,7 +119,7 @@ fun NotesGrid(
             key = { note -> note.id }
         ) { note ->
             NotesCard(
-                notesData = note,
+                note = note,
                 modifier = Modifier
                     .padding(dimensionResource(R.dimen.padding_very_small))
                     .clickable(
@@ -151,7 +151,7 @@ fun NotesList(
             key = {note -> note.id}
         ) { note ->
             NotesCard(
-                notesData = note,
+                note = note,
                 modifier = Modifier
                     .padding(8.dp)
                     .clickable(
@@ -171,28 +171,28 @@ fun NotesList(
  */
 @Composable
 fun NotesCard(
-    notesData: Note,
+    note: Note,
     modifier: Modifier = Modifier,
 ) {
     Card (modifier = modifier) {
         Column (modifier = Modifier.padding(dimensionResource(R.dimen.padding_large))) {
             Row {
                 Text(
-                    text = notesData.title,
+                    text = note.title,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
                 )
                 //Spacer(modifier = Modifier.width(150.dp))
-                if (notesData.label != null) {
+                if (note.label != null) {
                     Label(
-                        label = notesData.label
+                        label = note.label
                     )
                 }
 
             }
             Text(
-                text = notesData.content,
+                text = note.content,
                 style = MaterialTheme.typography.bodyLarge,
                 maxLines = 5,
                 overflow = TextOverflow.Ellipsis,
@@ -230,7 +230,7 @@ private fun NotesItemCardPreview() {
         darkTheme = true
     ) {
         NotesCard(
-            notesData = sampleNote,
+            note = sampleNote,
             modifier = Modifier.padding(8.dp)
         )
     }

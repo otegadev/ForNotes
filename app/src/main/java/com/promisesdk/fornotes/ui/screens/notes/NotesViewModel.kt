@@ -1,17 +1,19 @@
 package com.promisesdk.fornotes.ui.screens.notes
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.promisesdk.fornotes.data.ForNotesLabels
 import com.promisesdk.fornotes.data.ForNotesRepository
 import com.promisesdk.fornotes.data.Note
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
@@ -19,57 +21,94 @@ class NotesViewModel (
     val forNotesRepository: ForNotesRepository
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow(NoteState())
-    val uiState: StateFlow<NoteState> = _uiState.asStateFlow()
+    var noteUiState by mutableStateOf(NoteState())
+        private set
 
-    val notesHomeUiState: StateFlow<NotesUiState> =
-        forNotesRepository.getAllNotes().map { NotesUiState(it) }
+    val notesHomeUiState: StateFlow<NotesHomeUiState> =
+        forNotesRepository.getAllNotes().map { NotesHomeUiState(notes = it) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000L),
-                initialValue = NotesUiState()
+                initialValue = NotesHomeUiState()
             )
 
-    fun loadNote(id: Int): StateFlow<NoteState>? {
-        return if (id != 0)
-            forNotesRepository.getNoteById(id)?.map { NoteState(note = it) }
-                ?.stateIn(
-                    scope = viewModelScope,
-                    started = SharingStarted.WhileSubscribed(5000L),
-                    initialValue = NoteState()
-                )
-        else
-            _uiState
+    fun updateUiState(noteDetails: NoteDetails) {
+        noteUiState = NoteState(noteDetails = noteDetails, isInputValid = validateInput(noteDetails))
     }
 
-    fun addNote(note: Note) {
-        if (_uiState.value.validInput())
-            viewModelScope.launch {
-                forNotesRepository.insertNote(note = note)
-            }
+    fun resetUiState() {
+        noteUiState = NoteState()
     }
 
-    fun updateNote() {
-        viewModelScope.launch {
-            forNotesRepository.updateNote(note = _uiState.value.note)
+    private fun validateInput(noteState: NoteDetails = noteUiState.noteDetails): Boolean {
+        return with(noteState) {
+            title.isNotBlank() || content.isNotBlank()
         }
     }
+
+    fun loadExistingNote(id: Int): StateFlow<NoteState> {
+       return forNotesRepository.getNoteById(id).map { NoteState(
+           noteDetails = it.toNoteDetails(), isInputValid = true
+       ) }
+           .stateIn(
+               scope = viewModelScope,
+               started = SharingStarted.WhileSubscribed(5000L),
+               initialValue = NoteState()
+           )
+    }
+
+    fun loadNewNote(): NoteState {
+        return noteUiState
+    }
+
+    fun addNote(noteUiState: NoteState) {
+        with(noteUiState) {
+            if (validateInput(noteDetails))
+                viewModelScope.launch {
+                    forNotesRepository.insertNote(note = noteDetails.toNote())
+                }
+        }
+    }
+
+
+    fun updateNote() {
+
+    }
 }
 
-data class NoteState(
-    val note: Note = Note(
-        id = 0,
-        title = "",
-        content = "",
-        label = null,
-        creationTimeInMillis = System.currentTimeMillis()
-    )
+data class NoteState (
+    val noteDetails: NoteDetails = NoteDetails(),
+    val isInputValid: Boolean = false
 )
 
-fun NoteState.validInput(): Boolean {
-    return note.title.trim() != "" || note.content.trim() != ""
+data class NoteDetails(
+    val id: Int = 0,
+    val title: String = "",
+    val content:String = "",
+    val label: ForNotesLabels? = null,
+    val creationTimeInMillis: Long = System.currentTimeMillis()
+)
+
+fun NoteDetails.toNote(): Note {
+    return Note(
+        id = id,
+        title = title,
+        content = content,
+        label = label,
+        creationTimeInMillis = creationTimeInMillis
+    )
 }
 
-data class NotesUiState(
+fun Note.toNoteDetails(): NoteDetails {
+    return NoteDetails(
+        id = id,
+        title = title,
+        content = content,
+        label = label,
+        creationTimeInMillis = creationTimeInMillis
+    )
+}
+
+data class NotesHomeUiState(
     val notes: List<Note> = emptyList()
 )

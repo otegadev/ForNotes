@@ -36,7 +36,7 @@ interface ForNotesDao {
     fun getNoteByCreationTime(queryString: Long): Flow<List<Note>>
 
     @Query("SELECT * FROM notes WHERE id = :id")
-    fun getNoteById(id: Int): Flow<Note>?
+    fun getNoteById(id: Int): Flow<Note>
 
 
     @Insert (onConflict = OnConflictStrategy.REPLACE)

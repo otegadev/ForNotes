@@ -24,8 +24,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,9 +37,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.promisesdk.fornotes.R
 import com.promisesdk.fornotes.data.Note
 import com.promisesdk.fornotes.data.sampleNote
+import com.promisesdk.fornotes.ui.AppViewModelProvider
 import com.promisesdk.fornotes.ui.EditBottomBar
 import com.promisesdk.fornotes.ui.EditDropDownMenu
 import com.promisesdk.fornotes.ui.Label
@@ -47,7 +53,8 @@ import com.promisesdk.fornotes.ui.utils.defaultTopBarActions
 
 @Composable
 fun NoteEditScreen(
-    note: Note?,
+    noteState: NoteState,
+    onValueChange: (NoteDetails) -> Unit,
     onBackPress: () -> Unit,
     forNotesWindowSize: ForNotesWindowSize
 ) {
@@ -55,9 +62,10 @@ fun NoteEditScreen(
     var interactionSource = remember { MutableInteractionSource() }
     var isFocused = interactionSource.collectIsFocusedAsState()
 
-    BackHandler {
-        onBackPress
-    }
+    BackHandler (
+        enabled = true,
+        onBack = onBackPress
+    )
     Scaffold (
         topBar = {
             NotesEditTopAppBar(
@@ -75,7 +83,8 @@ fun NoteEditScreen(
         }
     ) { contentPadding ->
         NotesEditTextArea(
-            note = note,
+            noteDetails = noteState.noteDetails,
+            onValueChange = onValueChange,
             interactionSource = interactionSource,
             modifier = Modifier
                 .padding(contentPadding)
@@ -151,9 +160,10 @@ fun NotesEditTopAppBar(
 
 @Composable
 fun NotesEditTextArea (
-    note: Note?,
+    noteDetails: NoteDetails,
+    onValueChange: (NoteDetails) -> Unit,
     interactionSource: MutableInteractionSource,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column (
         modifier = modifier
@@ -166,9 +176,9 @@ fun NotesEditTextArea (
             verticalAlignment = Alignment.CenterVertically
         ) {
             TextField(
-                value = note?.title ?: "",
+                value = noteDetails.title,
                 onValueChange = {
-                    note?.title = it
+                    onValueChange(noteDetails.copy(title = it))
                 },
                 textStyle = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
                 colors = TextFieldDefaults.colors(
@@ -188,16 +198,16 @@ fun NotesEditTextArea (
                 },
                 interactionSource = interactionSource
             )
-            if (note?.label != null) {
+            if (noteDetails.label != null) {
                 Label(
-                    label = note.label
+                    label = noteDetails.label
                 )
             }
         }
         TextField(
-            value = note?.content ?: "",
+            value = noteDetails.content,
             onValueChange = {
-                note?.content = it
+                onValueChange(noteDetails.copy(content = it))
             },
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
@@ -247,7 +257,8 @@ fun NotesEditTopBarPreview() {
 fun NotesEditTextAreaPreview() {
     ForNotesTheme {
         NotesEditTextArea(
-            note = sampleNote,
+            noteDetails = NoteDetails(),
+            onValueChange = {},
             interactionSource = rememberSaveable { MutableInteractionSource() }
         )
     }
@@ -262,7 +273,8 @@ fun NotesEditScreenPreview(){
         darkTheme = true
     ) {
         NoteEditScreen(
-            note = sampleNote,
+            noteState = NoteState(),
+            onValueChange = {},
             onBackPress = { },
             forNotesWindowSize = ForNotesWindowSize.Compact
         )
