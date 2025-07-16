@@ -324,14 +324,19 @@ fun ExpandedTopAppBar(
     modifier: Modifier = Modifier
 ) {
     val currentScreen: String? =
-        if (screen == Screen.NotesScreen)  {
-            stringResource(R.string.notes)
-        } else if (screen == Screen.TodoScreen) {
-            stringResource(R.string.todos)
-        } else if(screen == Screen.JournalScreen) {
-            stringResource(R.string.journals)
-        } else {
-            null
+        when (screen) {
+            Screen.NotesScreen -> {
+                stringResource(R.string.notes)
+            }
+            Screen.TodoScreen -> {
+                stringResource(R.string.todos)
+            }
+            Screen.JournalScreen -> {
+                stringResource(R.string.journals)
+            }
+            else -> {
+                null
+            }
         }
     Row (
         modifier = modifier,

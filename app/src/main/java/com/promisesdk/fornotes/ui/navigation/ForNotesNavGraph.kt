@@ -1,15 +1,12 @@
 package com.promisesdk.fornotes.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -26,7 +23,6 @@ import com.promisesdk.fornotes.ui.screens.notes.NotesViewModel
 import com.promisesdk.fornotes.ui.screens.todos.TodosHome
 import com.promisesdk.fornotes.ui.utils.ForNotesWindowSize
 import com.promisesdk.fornotes.ui.utils.Screen
-import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -65,7 +61,7 @@ fun ForNotesNavigationHost(
 
     val notesViewModel: NotesViewModel = viewModel(factory = AppViewModelProvider().factory)
     val notesHomeUiState = notesViewModel.notesHomeUiState.collectAsState()
-    var currentNoteId by rememberSaveable { mutableIntStateOf(0) }
+    var noteUiState = notesViewModel.noteUiState.collectAsState()
 
     //val todosViewModel: TodosViewModel = viewModel(factory = AppViewModelProvider().factory)
     //val todosHomeUiState = todosViewModel.todoHomeUiState.collectAsState()
@@ -88,16 +84,10 @@ fun ForNotesNavigationHost(
                     )
                 },
                 onNoteClick = {
-                    coroutineScope.launch {
-                        currentNoteId = it
-                        notesViewModel.updateUiState(
-                            notesViewModel.loadExistingNote(currentNoteId).value.noteDetails
-                        )
-                    }
-                    navController.navigate(EditNote(currentNoteId))
+                    navController.navigate(EditNote(it))
                 },
                 onFabClick = {
-                    navController.navigate(EditNote(currentNoteId))
+                    navController.navigate(EditNote(id = 0))
                 }
             )
         }
@@ -131,20 +121,25 @@ fun ForNotesNavigationHost(
         composable<EditNote> { backStackEntry ->
             val args = backStackEntry.toRoute<EditNote>()
             val noteIdFromNav = args.id
-            val noteState: NoteState =
-                if (noteIdFromNav != 0) notesViewModel.noteUiState
-                else notesViewModel.loadNewNote()
-
+            LaunchedEffect(noteIdFromNav) {
+                if (noteIdFromNav != 0) {
+                    notesViewModel.loadExistingNote(noteIdFromNav)
+                } else {
+                    notesViewModel.loadNewNote()
+                }
+            }
+            val noteState: NoteState = noteUiState.value
             NoteEditScreen(
                 noteState = noteState,
                 onValueChange = notesViewModel::updateUiState,
                 onBackPress = {
                     if (noteIdFromNav == 0) {
-                        notesViewModel.addNote(notesViewModel.noteUiState)
+                        notesViewModel.addNote(noteState)
+                    } else {
+                        notesViewModel.updateNote(noteState)
                     }
-                    currentNoteId = 0
-                    notesViewModel.resetUiState()
                     navController.popBackStack()
+                    notesViewModel.resetUiState()
                 },
                 forNotesWindowSize = windowSize
             )
@@ -159,6 +154,7 @@ private fun navItemNavigation(
     when (clickedScreen) {
         Screen.NotesScreen -> {
             navHostController.navigate(Notes)
+            navHostController.popBackStack()
         }
         Screen.TodoScreen -> {
             navHostController.navigate(Todos)

@@ -15,18 +15,26 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.Label
+import androidx.compose.material.icons.rounded.Archive
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -37,20 +45,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.promisesdk.fornotes.R
-import com.promisesdk.fornotes.data.Note
-import com.promisesdk.fornotes.data.sampleNote
-import com.promisesdk.fornotes.ui.AppViewModelProvider
 import com.promisesdk.fornotes.ui.EditBottomBar
 import com.promisesdk.fornotes.ui.EditDropDownMenu
 import com.promisesdk.fornotes.ui.Label
 import com.promisesdk.fornotes.ui.SaveButton
 import com.promisesdk.fornotes.ui.theme.ForNotesTheme
+import com.promisesdk.fornotes.ui.utils.EditScreenActions
 import com.promisesdk.fornotes.ui.utils.ForNotesWindowSize
-import com.promisesdk.fornotes.ui.utils.defaultTopBarActions
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteEditScreen(
     noteState: NoteState,
@@ -59,8 +63,12 @@ fun NoteEditScreen(
     forNotesWindowSize: ForNotesWindowSize
 ) {
 
-    var interactionSource = remember { MutableInteractionSource() }
-    var isFocused = interactionSource.collectIsFocusedAsState()
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused = interactionSource.collectIsFocusedAsState()
+
+    var showLabelPickerDialog by rememberSaveable { mutableStateOf(false) }
+    val sheetState: SheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
 
     BackHandler (
         enabled = true,
@@ -70,10 +78,15 @@ fun NoteEditScreen(
         topBar = {
             NotesEditTopAppBar(
                 onBackPress = onBackPress,
+                addLabelAction = { showLabelPickerDialog = true },
+                onShareAction = {},
+                moveToTrashAction = {},
+                moveToArchiveAction = {},
                 windowSize = forNotesWindowSize,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .windowInsetsPadding(WindowInsets.statusBars),
+
             )
         },
         bottomBar = {
@@ -91,15 +104,44 @@ fun NoteEditScreen(
 
         )
     }
+
+    if (showLabelPickerDialog) {
+
+    }
 }
 
 @Composable
 fun NotesEditTopAppBar(
     onBackPress: () -> Unit,
+    addLabelAction: () -> Unit,
+    onShareAction: () -> Unit,
+    moveToTrashAction: () -> Unit,
+    moveToArchiveAction: () -> Unit,
     windowSize: ForNotesWindowSize,
     modifier: Modifier = Modifier
 ) {
-    val topBarActions = defaultTopBarActions
+    val topBarActions = listOf(
+        EditScreenActions(
+            actionName = R.string.labels,
+            icon = Icons.AutoMirrored.Rounded.Label,
+            onActionClick = addLabelAction
+        ),
+        EditScreenActions(
+            actionName = R.string.share,
+            icon = Icons.Rounded.Share,
+            onActionClick = onShareAction
+        ),
+        EditScreenActions(
+            actionName = R.string.delete,
+            icon = Icons.Rounded.Delete,
+            onActionClick = moveToTrashAction
+        ),
+        EditScreenActions(
+            actionName = R.string.move_archive,
+            icon = Icons.Rounded.Archive,
+            onActionClick = moveToArchiveAction
+        )
+    )
 
     Row (
         modifier = modifier,
@@ -245,7 +287,11 @@ fun NotesEditTopBarPreview() {
         NotesEditTopAppBar(
             onBackPress = { },
             windowSize = ForNotesWindowSize.Compact,
-            Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            addLabelAction = {},
+            onShareAction = {},
+            moveToTrashAction = {},
+            moveToArchiveAction = {},
         )
     }
 }
